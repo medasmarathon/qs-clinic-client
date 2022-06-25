@@ -101,7 +101,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@quasar/app-vite@npm:^1.0.0":
+"@quasar/app-vite@npm:^1.0.2":
   version: 1.0.2
   resolution: "@quasar/app-vite@npm:1.0.2"
   dependencies:
@@ -170,7 +170,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@quasar/extras@npm:^1.0.0":
+"@quasar/extras@npm:^1.14.1":
   version: 1.14.1
   resolution: "@quasar/extras@npm:1.14.1"
   checksum: 03e53647d18b6894ec1bcbc3a5258e68bc152ba11a07e2f33b74de9161f60e8277871f847688bb41a4e182d0d125b0a93fcc98665a5b9b4473bb9fc5dc51de85
@@ -905,15 +905,15 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "clinic-client@workspace:."
   dependencies:
-    "@quasar/app-vite": ^1.0.0
-    "@quasar/extras": ^1.0.0
+    "@quasar/app-vite": ^1.0.2
+    "@quasar/extras": ^1.14.1
     "@types/node": ^12.20.21
     autoprefixer: ^10.4.2
-    pinia: ^2.0.11
-    quasar: ^2.6.0
-    typescript: ^4.5.4
-    vue: ^3.0.0
-    vue-router: ^4.0.0
+    pinia: ^2.0.14
+    quasar: ^2.7.3
+    typescript: ^4.7.4
+    vue: ^3.2.37
+    vue-router: ^4.0.16
     yup: ^0.32.11
   languageName: unknown
   linkType: soft
@@ -2995,7 +2995,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pinia@npm:^2.0.11":
+"pinia@npm:^2.0.14":
   version: 2.0.14
   resolution: "pinia@npm:2.0.14"
   dependencies:
@@ -3089,7 +3089,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"quasar@npm:^2.6.0":
+"quasar@npm:^2.7.3":
   version: 2.7.3
   resolution: "quasar@npm:2.7.3"
   checksum: 42ae066c7a7e477731e3063bfa6b097bc89a670dac4781dd3e72d3c16e0db61a909f09eea21ef342592953fd6167f80a4c9add20722d4df0229616d3a86f5810
@@ -3722,7 +3722,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^4.5.4":
+"typescript@npm:^4.7.4":
   version: 4.7.4
   resolution: "typescript@npm:4.7.4"
   bin:
@@ -3732,7 +3732,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^4.5.4#~builtin<compat/typescript>":
+"typescript@patch:typescript@^4.7.4#~builtin<compat/typescript>":
   version: 4.7.4
   resolution: "typescript@patch:typescript@npm%3A4.7.4#~builtin<compat/typescript>::version=4.7.4&hash=bda367"
   bin:
@@ -3879,7 +3879,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-router@npm:^4.0.0":
+"vue-router@npm:^4.0.16":
   version: 4.0.16
   resolution: "vue-router@npm:4.0.16"
   dependencies:
@@ -3890,7 +3890,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue@npm:^3.0.0":
+"vue@npm:^3.2.37":
   version: 3.2.37
   resolution: "vue@npm:3.2.37"
   dependencies:

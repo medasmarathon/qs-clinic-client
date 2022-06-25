@@ -1,5 +1,16 @@
 {
   "editor.bracketPairColorization.enabled": true,
   "editor.guides.bracketPairs": true,
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "workbench.colorCustomizations": {
+    "editorBracketHighlight.foreground1": "#5bb3b3bb",
+    "editorBracketHighlight.foreground2": "#fac863bb",
+    "editorBracketHighlight.foreground3": "#f99157bb",
+    "editorBracketHighlight.foreground4": "#bb80b3bb",
+    "editorBracketHighlight.foreground5": "#98C379bb",
+    "editorBracketMatch.border": "#fff56ce7",
+    "activityBar.background": "#3F156B",
+    "titleBar.activeBackground": "#581E95",
+    "titleBar.activeForeground": "#FDFBFE"
+  }
 }
