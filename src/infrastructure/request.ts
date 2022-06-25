@@ -1,4 +1,4 @@
-import { useAuthStore } from "@/store";
+import { useAuthStore } from "src/stores";
 
 export enum Method {
   GET,
@@ -43,7 +43,7 @@ function authHeader(url: string): Record<string, string> {
   // return auth header with jwt if user is logged in and request is to the api url
   const { accessToken: token } = useAuthStore();
   const isLoggedIn = token === "" ? false : true;
-  const isApiUrl = url.startsWith(process.env.BASE_URL);
+  const isApiUrl = url.startsWith(process.env.BASE_URL!);
   if (isLoggedIn && isApiUrl) {
     return { "xxx-access-token": token };
   } else {

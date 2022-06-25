@@ -1,26 +1,22 @@
 <template>
-  <n-space justify="center" align="center" class="login-form">
-    <n-card>
-      <n-space vertical justify="center">
-        <n-form :model="loginValue">
-          <n-form-item-row label="Tên đăng nhập">
-            <n-input clear-input v-model:value="loginValue.username"></n-input>
-          </n-form-item-row>
-          <n-form-item-row label="Mật khẩu">
-            <n-input
-              clear-input
-              type="password"
-              v-model:value="loginValue.password"
-            ></n-input>
-          </n-form-item-row>
-        </n-form>
-        <n-text v-if="state.errorMessage != ''" type="error">
+  <q-page class="row items-center justify-evenly">
+    <q-card>
+      <q-card-section>
+        <q-form @submit="submit" class="q-gutter-md">
+          <q-input filled v-model="loginValue.username" label="Tên đăng nhập" />
+          <q-input filled v-model="loginValue.password" label="Mật khẩu" />
+        </q-form>
+        <q-banner
+          v-if="state.errorMessage != ''"
+          inline-actions
+          class="text-white bg-red"
+        >
           {{ state.errorMessage }}
-        </n-text>
-        <n-button type="info" @click="submit">Đăng nhập</n-button>
-      </n-space>
-    </n-card>
-  </n-space>
+        </q-banner>
+        <q-btn color="primary" @click="submit">Đăng nhập</q-btn>
+      </q-card-section>
+    </q-card>
+  </q-page>
 </template>
 
 <script lang="ts" setup>
