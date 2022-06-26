@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 
 import { httpRequest } from "src/infrastructure/request";
 import getErrorMessage from "src/infrastructure/errorHandling";
-import { useRouter } from "vue-router";
+import Router from "src/router";
 
 const baseUrl = `${process.env.VUE_APP_CLINIC_URL}/auth`;
 
@@ -26,7 +26,6 @@ export const useAuthStore = defineStore({
   },
   actions: {
     async login(username: string, password: string): Promise<void> {
-      const router = useRouter();
       const loginResponse = await httpRequest.post<LoginResponse>(
         `${baseUrl}/login`,
         {
@@ -45,13 +44,12 @@ export const useAuthStore = defineStore({
       localStorage.setItem("accessToken", JSON.stringify(loginResponse.token));
 
       // redirect to previous url or default to home page
-      router.push(this.returnUrl || "/home");
+      Router.push(this.returnUrl || "/home");
     },
     logout() {
-      const router = useRouter();
       this.accessToken = "";
       localStorage.removeItem("accessToken");
-      router.push("/login");
+      Router.push("/login");
     },
   },
 });

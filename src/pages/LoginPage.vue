@@ -10,16 +10,31 @@
                 v-model="loginValue.username"
                 label="Tên đăng nhập"
               />
-              <q-input filled v-model="loginValue.password" label="Mật khẩu" />
+              <q-input
+                filled
+                v-model="loginValue.password"
+                :type="isPwd ? 'password' : 'text'"
+                label="Mật khẩu"
+              >
+                <template v-slot:append>
+                  <q-icon
+                    :name="isPwd ? 'visibility_off' : 'visibility'"
+                    class="cursor-pointer"
+                    @click="isPwd = !isPwd"
+                  />
+                </template>
+              </q-input>
             </q-form>
             <q-banner
               v-if="state.errorMessage != ''"
               inline-actions
-              class="text-white bg-red"
+              class="text-white bg-red q-mt-sm q-mb-sm"
             >
               {{ state.errorMessage }}
             </q-banner>
-            <q-btn color="primary" @click="submit()">Đăng nhập</q-btn>
+            <q-btn color="primary" @click="submit()" class="q-mt-sm">
+              Đăng nhập
+            </q-btn>
           </q-card-section>
         </q-card>
       </q-page>
@@ -41,6 +56,7 @@ const loginSchema = yup.object({
 const state = reactive({ errorMessage: "" });
 const auth = useAuthStore();
 const loginValue = ref({ username: "", password: "" });
+const isPwd = ref(true);
 
 async function submit() {
   await loginSchema
