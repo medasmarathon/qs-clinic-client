@@ -6,12 +6,12 @@
           <q-card-section>
             <q-form @submit="submit" class="q-gutter-md">
               <q-input
-                filled
+                outlined
                 v-model="loginValue.username"
                 label="Tên đăng nhập"
               />
               <q-input
-                filled
+                outlined
                 v-model="loginValue.password"
                 :type="isPwd ? 'password' : 'text'"
                 label="Mật khẩu"
