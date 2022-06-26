@@ -13,7 +13,20 @@
 
         <q-toolbar-title> Phòng khám </q-toolbar-title>
 
-        <div>Clinic</div>
+        <q-btn color="white" round flat icon="account_circle">
+          <q-menu>
+            <q-list style="min-width: 100px">
+              <menu-link
+                title="Thông tin cá nhân"
+                link="home/profile"
+              ></menu-link>
+              <q-separator />
+              <q-item clickable v-close-popup @click="logout" class="text-red">
+                <q-item-section>Đăng xuất</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
       </q-toolbar>
     </q-header>
 
@@ -40,6 +53,7 @@
 <script lang="ts" setup>
 import { defineComponent, ref } from "vue";
 import MenuLink from "components/MenuLink.vue";
+import { useAuthStore } from "src/stores";
 
 const essentialLinks = [
   {
@@ -65,8 +79,13 @@ const essentialLinks = [
 ];
 
 const leftDrawerOpen = ref(false);
+const auth = useAuthStore();
 
 function toggleLeftMenu() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
+}
+
+function logout() {
+  return auth.logout();
 }
 </script>
