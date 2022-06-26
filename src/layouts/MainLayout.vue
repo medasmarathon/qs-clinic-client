@@ -22,7 +22,7 @@
         <q-item clickable @click="toggleLeftMenu" color="danger">
           <q-icon name="clear" size="2em"></q-icon>
         </q-item>
-        <q-item-label header> Essential Links </q-item-label>
+        <q-item-label header> Danh mục </q-item-label>
         <menu-link
           v-for="link in essentialLinks"
           :key="link.title"

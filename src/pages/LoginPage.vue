@@ -1,29 +1,36 @@
 <template>
-  <q-page class="row items-center justify-evenly">
-    <q-card>
-      <q-card-section>
-        <q-form @submit="submit" class="q-gutter-md">
-          <q-input filled v-model="loginValue.username" label="Tên đăng nhập" />
-          <q-input filled v-model="loginValue.password" label="Mật khẩu" />
-        </q-form>
-        <q-banner
-          v-if="state.errorMessage != ''"
-          inline-actions
-          class="text-white bg-red"
-        >
-          {{ state.errorMessage }}
-        </q-banner>
-        <q-btn color="primary" @click="submit">Đăng nhập</q-btn>
-      </q-card-section>
-    </q-card>
-  </q-page>
+  <q-layout>
+    <q-page-container>
+      <q-page class="row items-center justify-evenly">
+        <q-card>
+          <q-card-section>
+            <q-form @submit="submit" class="q-gutter-md">
+              <q-input
+                filled
+                v-model="loginValue.username"
+                label="Tên đăng nhập"
+              />
+              <q-input filled v-model="loginValue.password" label="Mật khẩu" />
+            </q-form>
+            <q-banner
+              v-if="state.errorMessage != ''"
+              inline-actions
+              class="text-white bg-red"
+            >
+              {{ state.errorMessage }}
+            </q-banner>
+            <q-btn color="primary" @click="submit()">Đăng nhập</q-btn>
+          </q-card-section>
+        </q-card>
+      </q-page>
+    </q-page-container>
+  </q-layout>
 </template>
 
 <script lang="ts" setup>
 import getErrorMessage from "src/infrastructure/errorHandling";
 import { useAuthStore } from "src/stores";
 import { reactive, ref } from "vue";
-import { useRouter } from "vue-router";
 import * as yup from "yup";
 
 const loginSchema = yup.object({
@@ -32,7 +39,6 @@ const loginSchema = yup.object({
 });
 
 const state = reactive({ errorMessage: "" });
-const router = useRouter();
 const auth = useAuthStore();
 const loginValue = ref({ username: "", password: "" });
 
