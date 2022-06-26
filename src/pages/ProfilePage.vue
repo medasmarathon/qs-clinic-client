@@ -1,14 +1,17 @@
 <template>
   <q-page class="row items-center justify-evenly">
-    <div>
-      <q-card class="row items-center justify-evenly">
+    <q-card>
+      <q-card class="items-center justify-evenly">
+        <q-card-section>
+          <div class="text-h6">Thông tin đăng nhập</div>
+        </q-card-section>
         <q-card-section class="row">
           <q-input
             filled
             label="Tên đăng nhập"
             disable
             stack-label
-            class="col q-ma-sm"
+            class="col-md q-ma-xs"
             v-model="userProfile.username"
           />
           <q-input
@@ -16,7 +19,7 @@
             stack-label
             :type="isPwd ? 'password' : 'text'"
             label="Mật khẩu mới"
-            class="col q-ma-sm"
+            class="col-md q-ma-xs"
             v-model="newPwd"
             :disable="!isEditingPassword"
           >
@@ -30,32 +33,37 @@
           </q-input>
         </q-card-section>
 
-        <q-card-section class="row">
+        <q-card-actions class="row">
           <q-btn
             :color="isEditingPassword ? 'positive' : 'primary'"
             @click="enableEditPassword()"
-            class="col q-ma-sm"
-            outlined
+            class="col-12 col-md-auto q-mb-sm"
+            outline
           >
-            Thay đổi mật khẩu
+            {{ isEditingPassword ? "Xác nhận" : "Thay đổi mật khẩu" }}
           </q-btn>
           <q-btn
-            :color="isEditingPassword ? 'negative' : 'dark'"
-            :disable="!isEditingPassword"
+            color="negative"
+            :class="{ hidden: !isEditingPassword }"
             @click="cancelEditPassword()"
-            class="col q-ma-sm"
-            outlined
+            class="col-12 col-md-auto q-mb-sm"
+            outline
             >Hủy</q-btn
           >
-        </q-card-section>
+        </q-card-actions>
       </q-card>
-      <q-card class="row">
+
+      <q-separator inset />
+      <q-card class="items-center justify-evenly">
+        <q-card-section>
+          <div class="text-h6">Thông tin cá nhân</div>
+        </q-card-section>
         <q-card-section class="row">
           <q-input
             outlined
             label="Họ tên"
             stack-label
-            class="q-ma-sm col"
+            class="q-ma-xs col-md"
             v-model="userProfile.fullName"
             :disable="!isEditing"
           />
@@ -63,7 +71,7 @@
             outlined
             stack-label
             label="Ngày sinh"
-            class="q-ma-sm col"
+            class="q-ma-xs col-md"
             :modelValue="''"
             :disable="!isEditing"
           />
@@ -71,18 +79,17 @@
             outlined
             stack-label
             label="Số điện thoại"
-            class="q-ma-sm col"
+            class="q-ma-xs col-md"
             :modelValue="''"
             :disable="!isEditing"
           />
         </q-card-section>
-        <q-separator inset />
         <q-card-section class="row">
           <q-input
             outlined
             label="Địa chỉ"
             stack-label
-            class="q-ma-sm col"
+            class="q-ma-xs col-md"
             v-model="userProfile.addressLine1"
             :disable="!isEditing"
           />
@@ -90,7 +97,7 @@
             outlined
             stack-label
             label="Tỉnh/ thành phố"
-            class="q-ma-sm col"
+            class="q-ma-xs col-md"
             v-model="userProfile.cityProvince"
             :disable="!isEditing"
           />
@@ -98,7 +105,7 @@
             outlined
             stack-label
             label="Quận huyện"
-            class="q-ma-sm col"
+            class="q-ma-xs col-md"
             :disable="!isEditing"
             v-model="userProfile.district"
           />
@@ -106,32 +113,31 @@
             outlined
             stack-label
             label="Phường xã"
-            class="q-ma-sm col"
+            class="q-ma-xs col-md"
             v-model="userProfile.ward"
             :disable="!isEditing"
           />
         </q-card-section>
-        <q-separator inset />
-        <q-card-section class="row">
+        <q-card-actions class="row">
           <q-btn
             :color="isEditing ? 'positive' : 'primary'"
             @click="enableEdit()"
-            outlined
-            class="col"
+            outline
+            class="col-12 col-md-auto"
           >
-            Chỉnh sửa
+            {{ isEditing ? "Xác nhận" : "Chỉnh sửa" }}
           </q-btn>
           <q-btn
-            :color="isEditing ? 'negative' : 'dark'"
-            :disable="!isEditing"
+            color="negative"
             @click="cancelEdit()"
-            outlined
-            class="col"
+            outline
+            :class="{ hidden: !isEditing }"
+            class="col-12 col-md-auto"
             >Hủy</q-btn
           >
-        </q-card-section>
+        </q-card-actions>
       </q-card>
-    </div>
+    </q-card>
   </q-page>
 </template>
 
