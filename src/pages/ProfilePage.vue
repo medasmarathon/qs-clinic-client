@@ -36,7 +36,7 @@
         <q-card-actions class="row">
           <q-btn
             :color="isEditingPassword ? 'positive' : 'primary'"
-            @click="enableEditPassword()"
+            @click="isEditing ? confirm() : enableEditPassword()"
             class="col-12 col-md-auto q-mb-sm"
             outline
           >
@@ -121,7 +121,7 @@
         <q-card-actions class="row">
           <q-btn
             :color="isEditing ? 'positive' : 'primary'"
-            @click="enableEdit()"
+            @click="isEditing ? confirm() : enableEdit()"
             outline
             class="col-12 col-md-auto"
           >
@@ -138,18 +138,42 @@
         </q-card-actions>
       </q-card>
     </q-card>
+
+    <!-- <q-dialog v-model="isConfirming" persistent>
+      <q-card>
+        <q-card-section class="row items-center">
+          <span class="q-ml-sm"> Xác nhận cập nhật thông tin ? </span>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Hủy" color="primary" v-close-popup />
+          <q-btn
+            flat
+            label="Xác nhận"
+            color="positive"
+            @click="submit()"
+            v-close-popup
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog> -->
   </q-page>
 </template>
 
 <script setup lang="ts">
 import { Profile } from "src/models/Profile";
+import { useUserStore } from "src/stores/user.store";
 import { reactive, ref } from "vue";
 
 const isPwd = ref(true);
 const isEditing = ref(false);
 const isEditingPassword = ref(false);
+const isConfirming = ref(false);
 const newPwd = ref("");
-const userProfile = reactive<Profile>({ username: "" });
+const userStore = useUserStore();
+const userProfile = reactive(
+  (await userStore.getUserProfile()) ?? new Profile()
+);
 
 function enableEdit() {
   isEditing.value = true;
@@ -162,6 +186,14 @@ function enableEditPassword() {
 }
 function cancelEditPassword() {
   isEditingPassword.value = false;
+}
+function confirm() {
+  console.log("confirm");
+  isConfirming.value = true;
+}
+function submit() {
+  isConfirming.value = false;
+  console.log(userProfile);
 }
 </script>
 

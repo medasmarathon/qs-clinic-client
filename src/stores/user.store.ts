@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { API } from "src/globals";
 import { httpRequest } from "src/infrastructure/request";
-import { UserProfile } from "src/DTOs/UserProfile";
+import { UserProfile } from "src/DTOs/response/UserProfile";
 import { Profile } from "src/models/Profile";
 
 export const useUserStore = defineStore({
@@ -13,13 +13,17 @@ export const useUserStore = defineStore({
     getRoles: (state) => state.profile?.roles ?? [],
   },
   actions: {
-    async getUserProfile(): Promise<UserProfile | null> {
-      let userProfile = await httpRequest.get<UserProfile>(API.UserProfile);
+    async getUserProfile(): Promise<Profile | null> {
+      let userProfile =
+        this.profile ?? (await httpRequest.get<UserProfile>(API.UserProfile));
       if (userProfile) {
         this.profile = new Profile();
         this.profile = { ...userProfile };
-        return userProfile;
+        return this.profile;
       }
+      return null;
+    },
+    async updateUserProfile(profile: Profile): Promise<Profile | null> {
       return null;
     },
   },

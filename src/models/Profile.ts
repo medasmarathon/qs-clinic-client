@@ -1,4 +1,4 @@
-import { Role } from "src/DTOs/Role";
+import { Role } from "src/DTOs/response/Role";
 
 export class Profile {
   username!: string;
