@@ -163,7 +163,7 @@
 <script setup lang="ts">
 import { Profile } from "src/models/Profile";
 import { useUserStore } from "src/stores/user.store";
-import { reactive, ref } from "vue";
+import { onBeforeMount, reactive, ref } from "vue";
 
 const isPwd = ref(true);
 const isEditing = ref(false);
@@ -171,9 +171,14 @@ const isEditingPassword = ref(false);
 const isConfirming = ref(false);
 const newPwd = ref("");
 const userStore = useUserStore();
-const userProfile = reactive(
-  (await userStore.getUserProfile()) ?? new Profile()
-);
+const userProfile = ref(new Profile());
+
+onBeforeMount(() => {
+  userStore.getUserProfile().then((profile) => {
+    console.log("Response" + profile);
+    if (profile) userProfile.value = profile;
+  });
+});
 
 function enableEdit() {
   isEditing.value = true;

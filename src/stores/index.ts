@@ -1,8 +1,10 @@
 import { store } from "quasar/wrappers";
 import { createPinia } from "pinia";
 import { useAuthStore } from "./auth.store";
+import { useUserStore } from "./user.store";
+import { useLocationStore } from "./location.store";
 
-export { useAuthStore };
+export { useAuthStore, useUserStore, useLocationStore };
 
 export default store((/* { ssrContext } */) => {
   const pinia = createPinia();

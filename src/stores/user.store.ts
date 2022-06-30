@@ -15,7 +15,11 @@ export const useUserStore = defineStore({
   actions: {
     async getUserProfile(): Promise<Profile | null> {
       let userProfile =
-        this.profile ?? (await httpRequest.get<UserProfile>(API.UserProfile));
+        this.profile ??
+        (await httpRequest.get<UserProfile>(
+          `${process.env.VUE_APP_CLINIC_URL}${API.UserProfile}`
+        ));
+      console.log(userProfile);
       if (userProfile) {
         this.profile = new Profile();
         this.profile = { ...userProfile };

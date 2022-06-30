@@ -31,6 +31,7 @@ function request(method: Method) {
       });
       requestOptions.body = JSON.stringify(body);
     }
+    console.log("Request at: " + url);
     return fetch(url, requestOptions).then(
       handleResponse
     ) as Promise<ResponseType>;
@@ -67,5 +68,7 @@ function handleResponse<ResponseType>(
       return Promise.reject(error);
     });
   }
-  return response.json() as Promise<ResponseType>;
+  let json = response.json();
+  console.log(json);
+  return json as Promise<ResponseType>;
 }
