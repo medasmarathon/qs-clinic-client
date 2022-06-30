@@ -5,7 +5,7 @@ import getErrorMessage from "src/infrastructure/errorHandling";
 import Router from "src/router";
 import { API } from "src/globals";
 import { debounce } from "quasar";
-import { CityProvince, District, WardTownVillage } from "./models/Location";
+import { CityProvince, District, WardTownVillage } from "../DTOs/Location";
 
 const baseUrl = `${process.env.VUE_APP_CLINIC_URL}/auth`;
 

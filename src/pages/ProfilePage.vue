@@ -142,14 +142,14 @@
 </template>
 
 <script setup lang="ts">
-import { UserProfile } from "src/models/userProfile";
+import { Profile } from "src/models/Profile";
 import { reactive, ref } from "vue";
 
 const isPwd = ref(true);
 const isEditing = ref(false);
 const isEditingPassword = ref(false);
 const newPwd = ref("");
-const userProfile = reactive<UserProfile>({ username: "" });
+const userProfile = reactive<Profile>({ username: "" });
 
 function enableEdit() {
   isEditing.value = true;

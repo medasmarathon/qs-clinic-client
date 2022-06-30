@@ -2,12 +2,13 @@ import { WardTownVillage } from "./Location";
 import { Role } from "./Role";
 
 export class UserProfile {
-  username?: String;
-  password?: String;
-  addressLine1?: String;
+  username!: string;
+  password?: string;
+  fullname?: string;
+  addressLine1?: string;
   birthday?: Date;
-  email?: String;
-  location_id?: String;
+  email?: string;
+  location_id?: string;
   location?: WardTownVillage;
   roles?: Role[];
 }

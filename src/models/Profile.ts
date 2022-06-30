@@ -1,4 +1,6 @@
-export class UserProfile {
+import { Role } from "src/DTOs/Role";
+
+export class Profile {
   username!: string;
   fullName?: string;
   birthdate?: Date;
@@ -8,4 +10,5 @@ export class UserProfile {
   district?: string;
   ward?: string;
   email?: string;
+  roles?: Role[];
 }
