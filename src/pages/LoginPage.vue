@@ -44,8 +44,9 @@
 
 <script lang="ts" setup>
 import getErrorMessage from "src/infrastructure/errorHandling";
+import Router from "src/router";
 import { useAuthStore } from "src/stores";
-import { reactive, ref } from "vue";
+import { onBeforeMount, reactive, ref } from "vue";
 import * as yup from "yup";
 
 const loginSchema = yup.object({
@@ -57,6 +58,12 @@ const state = reactive({ errorMessage: "" });
 const auth = useAuthStore();
 const loginValue = ref({ username: "", password: "" });
 const isPwd = ref(true);
+
+onBeforeMount(() => {
+  if (auth.isLoggedIn) {
+    Router.push("/home");
+  }
+});
 
 async function submit() {
   await loginSchema
