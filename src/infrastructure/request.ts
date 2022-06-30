@@ -19,7 +19,7 @@ class ErrorResponse {
 }
 
 function request(method: Method) {
-  return <ResponseType>(url: string, body: object) => {
+  return <ResponseType>(url: string, body?: object) => {
     const requestOptions: RequestInit = {
       method: Method[method],
       headers: authHeader(url),
