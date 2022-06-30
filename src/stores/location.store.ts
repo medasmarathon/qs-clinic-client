@@ -4,27 +4,10 @@ import { httpRequest } from "src/infrastructure/request";
 import getErrorMessage from "src/infrastructure/errorHandling";
 import Router from "src/router";
 import { API } from "src/globals";
+import { debounce } from "quasar";
+import { CityProvince, District, WardTownVillage } from "./models/Location";
 
 const baseUrl = `${process.env.VUE_APP_CLINIC_URL}/auth`;
-
-class WardTownVillage {
-  id!: String;
-  name?: String;
-  type?: String;
-  district?: District;
-}
-class District {
-  id!: String;
-  name?: String;
-  type?: String;
-  city_province?: CityProvince;
-}
-class CityProvince {
-  id!: String;
-  name?: String;
-  type?: String;
-  slug?: String;
-}
 
 export const useLocationStore = defineStore({
   id: "location",
@@ -66,34 +49,43 @@ export const useLocationStore = defineStore({
       districtId: string,
       cityProvinceId: string
     ): Promise<WardTownVillage[]> {
-      let searchParams = new URLSearchParams({
-        term: term,
-        districtId: districtId,
-        cityProvinceId: cityProvinceId,
-      });
-      return await httpRequest.get<WardTownVillage[]>(
-        `${API.WardTownVillage}?${searchParams}`
-      );
+      const search = async (t: string, d: string, cp: string) => {
+        let searchParams = new URLSearchParams({
+          term: t,
+          districtId: d,
+          cityProvinceId: cp,
+        });
+        return await httpRequest.get<WardTownVillage[]>(
+          `${API.WardTownVillage}?${searchParams}`
+        );
+      };
+      return debounce(search, 500)(term, districtId, cityProvinceId);
     },
     async getCityProvinceAutocomplete(term: string): Promise<CityProvince[]> {
-      let searchParams = new URLSearchParams({
-        term: term,
-      });
-      return await httpRequest.get<CityProvince[]>(
-        `${API.CityProvince}?${searchParams}`
-      );
+      const search = async (t: string) => {
+        let searchParams = new URLSearchParams({
+          term: t,
+        });
+        return await httpRequest.get<CityProvince[]>(
+          `${API.CityProvince}?${searchParams}`
+        );
+      };
+      return debounce(search, 500)(term);
     },
     async getDistrictAutocomplete(
       term: string,
       cityProvinceId: string
     ): Promise<District[]> {
-      let searchParams = new URLSearchParams({
-        term: term,
-        cityProvinceId: cityProvinceId,
-      });
-      return await httpRequest.get<District[]>(
-        `${API.District}?${searchParams}`
-      );
+      const search = async (t: string, cp: string) => {
+        let searchParams = new URLSearchParams({
+          term: t,
+          cityProvinceId: cp,
+        });
+        return await httpRequest.get<District[]>(
+          `${API.District}?${searchParams}`
+        );
+      };
+      return debounce(search, 500)(term, cityProvinceId);
     },
   },
 });
