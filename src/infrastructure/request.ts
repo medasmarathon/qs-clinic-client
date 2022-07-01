@@ -22,16 +22,17 @@ function request(method: Method) {
   return <ResponseType>(url: string, body?: object) => {
     const requestOptions: RequestInit = {
       method: Method[method],
-      headers: authHeader(url),
     };
     if (body) {
       requestOptions.headers = new Headers({
-        ...requestOptions.headers,
+        ...authHeader(url),
         "Content-Type": "application/json",
       });
       requestOptions.body = JSON.stringify(body);
+    } else {
+      requestOptions.headers = new Headers(authHeader(url));
     }
-    console.log("Request at: " + url);
+    console.log(requestOptions.headers);
     return fetch(url, requestOptions).then(
       handleResponse
     ) as Promise<ResponseType>;
@@ -44,9 +45,9 @@ function authHeader(url: string): Record<string, string> {
   // return auth header with jwt if user is logged in and request is to the api url
   const { accessToken: token } = useAuthStore();
   const isLoggedIn = token === "" ? false : true;
-  const isApiUrl = url.startsWith(process.env.BASE_URL!);
+  const isApiUrl = url.startsWith(process.env.VUE_APP_CLINIC_URL!);
   if (isLoggedIn && isApiUrl) {
-    return { "xxx-access-token": token };
+    return { "x-access-token": token };
   } else {
     return {};
   }
@@ -54,7 +55,7 @@ function authHeader(url: string): Record<string, string> {
 
 function handleResponse<ResponseType>(
   response: Response
-): Promise<ResponseType | ErrorResponse> {
+): Promise<ResponseType> {
   const { accessToken: token, logout } = useAuthStore();
   if (!response.ok) {
     return response.text().then((text) => {
@@ -68,7 +69,5 @@ function handleResponse<ResponseType>(
       return Promise.reject(error);
     });
   }
-  let json = response.json();
-  console.log(json);
-  return json as Promise<ResponseType>;
+  return response.json() as Promise<ResponseType>;
 }

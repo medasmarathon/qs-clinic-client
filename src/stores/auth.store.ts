@@ -41,7 +41,7 @@ export const useAuthStore = defineStore({
       this.accessToken = loginResponse.token;
 
       // store user details and jwt in local storage to keep user logged in between page refreshes
-      localStorage.setItem("accessToken", JSON.stringify(loginResponse.token));
+      localStorage.setItem("accessToken", loginResponse.token);
 
       // redirect to previous url or default to home page
       Router.push(this.returnUrl || "/home");

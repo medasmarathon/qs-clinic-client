@@ -174,10 +174,13 @@ const userStore = useUserStore();
 const userProfile = ref(new Profile());
 
 onBeforeMount(() => {
-  userStore.getUserProfile().then((profile) => {
-    console.log("Response" + profile);
-    if (profile) userProfile.value = profile;
-  });
+  userStore
+    .getUserProfile()
+    .then((profile) => {
+      console.log("Response" + profile);
+      if (profile) userProfile.value = profile;
+    })
+    .catch((err) => console.log(err));
 });
 
 function enableEdit() {

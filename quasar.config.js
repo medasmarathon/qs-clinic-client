@@ -49,7 +49,7 @@ module.exports = configure(function (/* ctx */) {
       // vueRouterBase,
       // vueDevtools,
       // vueOptionsAPI: false,
-      devtool: "source-map",
+      //devtool: "source-map",
       // rebuildCache: true, // rebuilds Vite/linter/etc cache on startup
 
       publicPath: "/",
