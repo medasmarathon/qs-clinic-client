@@ -2,7 +2,7 @@ import { Role } from "src/DTOs/response/Role";
 
 export class Profile {
   username!: string;
-  fullName?: string;
+  fullname?: string;
   birthdate?: Date;
   phoneNumber?: string[] = [];
   addressLine1?: string;

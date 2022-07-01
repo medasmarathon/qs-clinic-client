@@ -49,7 +49,7 @@ module.exports = configure(function (/* ctx */) {
       // vueRouterBase,
       // vueDevtools,
       // vueOptionsAPI: false,
-      //devtool: "source-map",
+      devtool: "source-map",
       // rebuildCache: true, // rebuilds Vite/linter/etc cache on startup
 
       publicPath: "/",
@@ -91,7 +91,7 @@ module.exports = configure(function (/* ctx */) {
       // directives: [],
 
       // Quasar plugins
-      plugins: [],
+      plugins: ["Dialog", "Notify"],
     },
 
     // animations: 'all', // --- includes all animations

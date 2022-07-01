@@ -32,7 +32,7 @@ function request(method: Method) {
     } else {
       requestOptions.headers = new Headers(authHeader(url));
     }
-    console.log(requestOptions.headers);
+    console.log("Request body:" + requestOptions.body);
     return fetch(url, requestOptions).then(
       handleResponse
     ) as Promise<ResponseType>;

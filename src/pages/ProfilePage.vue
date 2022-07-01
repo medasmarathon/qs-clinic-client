@@ -70,7 +70,7 @@
             label="Họ tên"
             stack-label
             class="q-ma-xs col-md"
-            v-model="userProfile.fullName"
+            v-model="userProfile.fullname"
             :disable="!isEditing"
           />
           <q-input
@@ -173,6 +173,8 @@
 </template>
 
 <script setup lang="ts">
+import { useQuasar } from "quasar";
+import { UpdateUserProfileRequest } from "src/DTOs/request/UpdateUserProfileRequest";
 import { Profile } from "src/models/Profile";
 import { useUserStore } from "src/stores/user.store";
 import { onBeforeMount, reactive, ref } from "vue";
@@ -184,6 +186,7 @@ const isConfirming = ref(false);
 const newPwd = ref("");
 const userStore = useUserStore();
 const userProfile = ref(new Profile());
+const $q = useQuasar();
 
 onBeforeMount(() => {
   userStore
@@ -214,6 +217,24 @@ function confirm() {
 function submit() {
   isConfirming.value = false;
   console.log(userProfile);
+  let updateRequest = new UpdateUserProfileRequest();
+  updateRequest = { ...userProfile.value };
+  userStore
+    .updateUserProfile(updateRequest)
+    .then((profile) => {
+      if (profile) userProfile.value = profile;
+      $q.notify({
+        message: "Đã cập nhật thông tin hồ sơ",
+        color: "positive",
+      });
+    })
+    .catch((err) => {
+      $q.notify({
+        message: "Cập nhật thất bại",
+        color: "negative",
+      });
+      console.log(err);
+    });
 }
 </script>
 
