@@ -3,6 +3,7 @@ import { API } from "src/globals";
 import { httpRequest } from "src/infrastructure/request";
 import { UserProfile } from "src/DTOs/response/UserProfile";
 import { Profile } from "src/models/Profile";
+import { UpdateUserProfileRequest } from "src/DTOs/request/UpdateUserProfileRequest";
 
 export const useUserStore = defineStore({
   id: "user",
@@ -27,7 +28,19 @@ export const useUserStore = defineStore({
       }
       return null;
     },
-    async updateUserProfile(profile: Profile): Promise<Profile | null> {
+    async updateUserProfile(
+      updateProfileRequest: UpdateUserProfileRequest
+    ): Promise<Profile | null> {
+      let userProfile = await httpRequest.put<UserProfile>(
+        `${process.env.VUE_APP_CLINIC_URL}${API.UserProfile}`,
+        updateProfileRequest
+      );
+      console.log(userProfile);
+      if (userProfile) {
+        this.profile = new Profile();
+        this.profile = { ...userProfile };
+        return this.profile;
+      }
       return null;
     },
   },

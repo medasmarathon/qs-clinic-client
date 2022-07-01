@@ -34,22 +34,28 @@
         </q-card-section>
 
         <q-card-actions class="row">
-          <q-btn
-            :color="isEditingPassword ? 'positive' : 'primary'"
-            @click="isEditing ? confirm() : enableEditPassword()"
-            class="col-12 col-md-auto q-mb-sm"
-            outline
-          >
-            {{ isEditingPassword ? "Xác nhận" : "Thay đổi mật khẩu" }}
-          </q-btn>
-          <q-btn
-            color="negative"
-            :class="{ hidden: !isEditingPassword }"
-            @click="cancelEditPassword()"
-            class="col-12 col-md-auto q-mb-sm"
-            outline
-            >Hủy</q-btn
-          >
+          <div class="col-xs-12 col-md-auto row q-pa-xs">
+            <q-btn
+              :color="isEditingPassword ? 'positive' : 'primary'"
+              @click="isEditingPassword ? confirm() : enableEditPassword()"
+              class="col-xs-12"
+              outline
+            >
+              {{ isEditingPassword ? "Xác nhận" : "Thay đổi mật khẩu" }}
+            </q-btn>
+          </div>
+
+          <div class="col-xs-12 col-md-auto row q-pa-xs">
+            <q-btn
+              color="negative"
+              :class="{ hidden: !isEditingPassword }"
+              @click="cancelEditPassword()"
+              class="col-xs-12"
+              outline
+            >
+              Hủy
+            </q-btn>
+          </div>
         </q-card-actions>
       </q-card>
 
@@ -119,34 +125,40 @@
           />
         </q-card-section>
         <q-card-actions class="row">
-          <q-btn
-            :color="isEditing ? 'positive' : 'primary'"
-            @click="isEditing ? confirm() : enableEdit()"
-            outline
-            class="col-12 col-md-auto"
-          >
-            {{ isEditing ? "Xác nhận" : "Chỉnh sửa" }}
-          </q-btn>
-          <q-btn
-            color="negative"
-            @click="cancelEdit()"
-            outline
-            :class="{ hidden: !isEditing }"
-            class="col-12 col-md-auto"
-            >Hủy</q-btn
-          >
+          <div class="col-xs-12 col-md-auto row q-pa-xs">
+            <q-btn
+              :color="isEditing ? 'positive' : 'primary'"
+              @click="isEditing ? confirm() : enableEdit()"
+              outline
+              class="col-xs-12"
+            >
+              {{ isEditing ? "Xác nhận" : "Chỉnh sửa" }}
+            </q-btn>
+          </div>
+
+          <div class="col-xs-12 col-md-auto row q-pa-xs">
+            <q-btn
+              color="negative"
+              @click="cancelEdit()"
+              outline
+              :class="{ hidden: !isEditing }"
+              class="col-xs-12"
+            >
+              Hủy
+            </q-btn>
+          </div>
         </q-card-actions>
       </q-card>
     </q-card>
 
-    <!-- <q-dialog v-model="isConfirming" persistent>
+    <q-dialog v-model="isConfirming" persistent>
       <q-card>
         <q-card-section class="row items-center">
           <span class="q-ml-sm"> Xác nhận cập nhật thông tin ? </span>
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn flat label="Hủy" color="primary" v-close-popup />
+          <q-btn flat label="Hủy" color="negative" v-close-popup />
           <q-btn
             flat
             label="Xác nhận"
@@ -156,7 +168,7 @@
           />
         </q-card-actions>
       </q-card>
-    </q-dialog> -->
+    </q-dialog>
   </q-page>
 </template>
 
