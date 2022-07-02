@@ -4,3 +4,5 @@ export const API = {
   WardTownVillage: "/api/location/ward-town-village",
   District: "/api/location/district",
 };
+
+export const BASE_URL = process.env.VUE_APP_CLINIC_URL;

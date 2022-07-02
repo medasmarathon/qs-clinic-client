@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { API } from "src/globals";
+import { API, BASE_URL } from "src/globals";
 import { httpRequest } from "src/infrastructure/request";
 import { UserProfile } from "src/DTOs/response/UserProfile";
 import { Profile } from "src/models/Profile";
@@ -17,9 +17,7 @@ export const useUserStore = defineStore({
     async getUserProfile(): Promise<Profile | null> {
       let userProfile =
         this.profile ??
-        (await httpRequest.get<UserProfile>(
-          `${process.env.VUE_APP_CLINIC_URL}${API.UserProfile}`
-        ));
+        (await httpRequest.get<UserProfile>(`${BASE_URL}${API.UserProfile}`));
       console.log(userProfile);
       if (userProfile) {
         this.profile = new Profile();
@@ -32,7 +30,7 @@ export const useUserStore = defineStore({
       updateProfileRequest: UpdateUserProfileRequest
     ): Promise<Profile | null> {
       let userProfile = await httpRequest.put<UserProfile>(
-        `${process.env.VUE_APP_CLINIC_URL}${API.UserProfile}`,
+        `${BASE_URL}${API.UserProfile}`,
         updateProfileRequest
       );
       console.log(userProfile);

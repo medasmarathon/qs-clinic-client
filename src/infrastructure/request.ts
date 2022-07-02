@@ -1,3 +1,4 @@
+import { BASE_URL } from "src/globals";
 import { useAuthStore } from "src/stores";
 
 export enum Method {
@@ -45,7 +46,7 @@ function authHeader(url: string): Record<string, string> {
   // return auth header with jwt if user is logged in and request is to the api url
   const { accessToken: token } = useAuthStore();
   const isLoggedIn = token === "" ? false : true;
-  const isApiUrl = url.startsWith(process.env.VUE_APP_CLINIC_URL!);
+  const isApiUrl = url.startsWith(BASE_URL!);
   if (isLoggedIn && isApiUrl) {
     return { "x-access-token": token };
   } else {

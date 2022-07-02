@@ -11,8 +11,6 @@ import {
   WardTownVillage,
 } from "../DTOs/response/Location";
 
-const baseUrl = `${process.env.VUE_APP_CLINIC_URL}/auth`;
-
 export const useLocationStore = defineStore({
   id: "location",
   state: () => ({

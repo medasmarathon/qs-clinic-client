@@ -44,6 +44,7 @@
 </template>
 
 <script setup lang="ts">
+import { useLocationStore } from "src/stores";
 import { defineProps, reactive, defineEmits } from "vue";
 
 const props = defineProps<{
@@ -61,12 +62,7 @@ const emits = defineEmits([
   "update:wardTown",
 ]);
 
-// const location = reactive({
-//   addressLine1: props.addressLine1,
-//   wardTown: props.wardTown,
-//   district: props.district,
-//   cityProvince: props.cityProvince
-// })
+const locationStore = useLocationStore();
 </script>
 
 <style lang="scss" scoped></style>

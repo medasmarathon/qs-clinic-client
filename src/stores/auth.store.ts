@@ -3,8 +3,9 @@ import { defineStore } from "pinia";
 import { httpRequest } from "src/infrastructure/request";
 import getErrorMessage from "src/infrastructure/errorHandling";
 import Router from "src/router";
+import { BASE_URL } from "src/globals";
 
-const baseUrl = `${process.env.VUE_APP_CLINIC_URL}/auth`;
+const authUrl = `${BASE_URL}/auth`;
 
 class LoginResponse {
   status!: "SUCCESS" | "ERROR" | "UNAUTHORIZED";
@@ -27,7 +28,7 @@ export const useAuthStore = defineStore({
   actions: {
     async login(username: string, password: string): Promise<void> {
       const loginResponse = await httpRequest.post<LoginResponse>(
-        `${baseUrl}/login`,
+        `${authUrl}/login`,
         {
           username,
           password,
