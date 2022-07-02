@@ -41,6 +41,8 @@
         <q-card-section class="row">
           <q-input outlined label="Họ tên" stack-label class="q-ma-xs col-md" v-model="userProfile.fullname"
             :disable="!isEditing" />
+        </q-card-section>
+        <q-card-section class="row">
           <q-input outlined stack-label label="Ngày sinh" class="q-ma-xs col-md" v-model="userProfile.birthdate"
             :disable="!isEditing">
             <template v-slot:prepend>
@@ -55,7 +57,8 @@
               </q-icon>
             </template>
           </q-input>
-          <q-input outlined stack-label label="Số điện thoại" class="q-ma-xs col-md" :modelValue="''"
+          <q-input outlined stack-label label="Số điện thoại" class="q-ma-xs col-md" :modelValue="userProfile.phoneNumber ? userProfile.phoneNumber[0] : ''" :disable="!isEditing" />
+          <q-input outlined stack-label label="Email" class="q-ma-xs col-md" :modelValue="userProfile.email"
             :disable="!isEditing" />
         </q-card-section>
         <q-card-section class="row">
@@ -107,6 +110,7 @@ import { Profile } from "src/models/Profile";
 import { useUserStore } from "src/stores/user.store";
 import { ProfileVM } from "src/viewModels/ProfileVM";
 import { onBeforeMount, reactive, ref } from "vue";
+import dayjs from "dayjs";
 
 const isPwd = ref(true);
 const isEditing = ref(false);
@@ -121,7 +125,7 @@ onBeforeMount(() => {
   userStore
     .getUserProfile()
     .then((profile) => {
-      if (profile) userProfile.value = { ...profile, birthdate: profile.birthdate?.toLocaleString(Intl.DateTimeFormat().resolvedOptions().locale, { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, year: 'numeric', month: 'numeric', day: 'numeric' }) };
+      if (profile) userProfile.value = { ...profile, birthdate: dayjs(profile.birthdate).locale(Intl.DateTimeFormat().resolvedOptions().locale).format("YYYY MM DD") };
       console.log("Profile" + JSON.stringify(userProfile.value));
     })
     .catch((err) => console.log(err));
@@ -151,7 +155,7 @@ function submit() {
   userStore
     .updateUserProfile(updateRequest)
     .then((profile) => {
-      if (profile) userProfile.value = { ...profile, birthdate: profile.birthdate?.toLocaleString() };
+      if (profile) userProfile.value = { ...profile, birthdate: dayjs(profile.birthdate).locale(Intl.DateTimeFormat().resolvedOptions().locale).format("YYYY MM DD") };
       $q.notify({
         message: "Đã cập nhật thông tin hồ sơ",
         color: "positive",

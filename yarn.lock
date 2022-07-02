@@ -909,6 +909,7 @@ __metadata:
     "@quasar/extras": ^1.14.1
     "@types/node": ^12.20.21
     autoprefixer: ^10.4.2
+    dayjs: ^1.11.3
     dotenv: ^16.0.1
     pinia: ^2.0.14
     quasar: ^2.7.3
@@ -1101,6 +1102,13 @@ __metadata:
   version: 2.6.20
   resolution: "csstype@npm:2.6.20"
   checksum: cb5d5ded49c3390909e93b20b285d4a63d0ba5b10294bdfbc4cf911f80e91d6cf367ea671f99f09570762535c14ea7074a2c7fa73f02008203f01328dea8968b
+  languageName: node
+  linkType: hard
+
+"dayjs@npm:^1.11.3":
+  version: 1.11.3
+  resolution: "dayjs@npm:1.11.3"
+  checksum: c87e06b562a51ae6568cc5b840c7579d82a0f8af7163128c858fe512d3d71d07bd8e8e464b8cc41b8698a9e26b80ab2c082d14a1cd4c33df5692d77ccdfc5a43
   languageName: node
   linkType: hard
 
