@@ -3,7 +3,7 @@ export class UpdateUserProfileRequest {
   password?: string;
   fullname?: string;
   phone?: string;
-  birthday?: Date;
+  birthdate?: string;
   email?: string;
   addressLine1?: string;
   locationId?: string;

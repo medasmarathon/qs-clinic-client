@@ -6,53 +6,27 @@
           <div class="text-h6">Thông tin đăng nhập</div>
         </q-card-section>
         <q-card-section class="row">
-          <q-input
-            filled
-            label="Tên đăng nhập"
-            disable
-            stack-label
-            class="col-md q-ma-xs"
-            v-model="userProfile.username"
-          />
-          <q-input
-            outlined
-            stack-label
-            :type="isPwd ? 'password' : 'text'"
-            label="Mật khẩu mới"
-            class="col-md q-ma-xs"
-            v-model="newPwd"
-            :disable="!isEditingPassword"
-          >
+          <q-input filled label="Tên đăng nhập" disable stack-label class="col-md q-ma-xs"
+            v-model="userProfile.username" />
+          <q-input outlined stack-label :type="isPwd ? 'password' : 'text'" label="Mật khẩu mới"
+            class="col-md q-ma-xs" v-model="newPwd" :disable="!isEditingPassword">
             <template v-slot:append>
-              <q-icon
-                :name="isPwd ? 'visibility_off' : 'visibility'"
-                class="cursor-pointer"
-                @click="isPwd = !isPwd"
-              />
+              <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
             </template>
           </q-input>
         </q-card-section>
 
         <q-card-actions class="row">
           <div class="col-xs-12 col-md-auto row q-pa-xs">
-            <q-btn
-              :color="isEditingPassword ? 'positive' : 'primary'"
-              @click="isEditingPassword ? confirm() : enableEditPassword()"
-              class="col-xs-12"
-              outline
-            >
+            <q-btn :color="isEditingPassword ? 'positive' : 'primary'"
+              @click="isEditingPassword ? confirm() : enableEditPassword()" class="col-xs-12" outline>
               {{ isEditingPassword ? "Xác nhận" : "Thay đổi mật khẩu" }}
             </q-btn>
           </div>
 
           <div class="col-xs-12 col-md-auto row q-pa-xs">
-            <q-btn
-              color="negative"
-              :class="{ hidden: !isEditingPassword }"
-              @click="cancelEditPassword()"
-              class="col-xs-12"
-              outline
-            >
+            <q-btn color="negative" :class="{ hidden: !isEditingPassword }" @click="cancelEditPassword()"
+              class="col-xs-12" outline>
               Hủy
             </q-btn>
           </div>
@@ -65,85 +39,45 @@
           <div class="text-h6">Thông tin cá nhân</div>
         </q-card-section>
         <q-card-section class="row">
-          <q-input
-            outlined
-            label="Họ tên"
-            stack-label
-            class="q-ma-xs col-md"
-            v-model="userProfile.fullname"
-            :disable="!isEditing"
-          />
-          <q-input
-            outlined
-            stack-label
-            label="Ngày sinh"
-            class="q-ma-xs col-md"
-            :modelValue="''"
-            :disable="!isEditing"
-          />
-          <q-input
-            outlined
-            stack-label
-            label="Số điện thoại"
-            class="q-ma-xs col-md"
-            :modelValue="''"
-            :disable="!isEditing"
-          />
+          <q-input outlined label="Họ tên" stack-label class="q-ma-xs col-md" v-model="userProfile.fullname"
+            :disable="!isEditing" />
+          <q-input outlined stack-label label="Ngày sinh" class="q-ma-xs col-md" v-model="userProfile.birthdate"
+            :disable="!isEditing">
+            <template v-slot:prepend>
+              <q-icon name="event">
+                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-date v-model="userProfile.birthdate">
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup label="Close" color="primary" flat />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+          <q-input outlined stack-label label="Số điện thoại" class="q-ma-xs col-md" :modelValue="''"
+            :disable="!isEditing" />
         </q-card-section>
         <q-card-section class="row">
-          <q-input
-            outlined
-            label="Địa chỉ"
-            stack-label
-            class="q-ma-xs col-md"
-            v-model="userProfile.addressLine1"
-            :disable="!isEditing"
-          />
-          <q-input
-            outlined
-            stack-label
-            label="Tỉnh/ thành phố"
-            class="q-ma-xs col-md"
-            v-model="userProfile.cityProvince"
-            :disable="!isEditing"
-          />
-          <q-input
-            outlined
-            stack-label
-            label="Quận huyện"
-            class="q-ma-xs col-md"
-            :disable="!isEditing"
-            v-model="userProfile.district"
-          />
-          <q-input
-            outlined
-            stack-label
-            label="Phường xã"
-            class="q-ma-xs col-md"
-            v-model="userProfile.ward"
-            :disable="!isEditing"
-          />
+          <q-input outlined label="Địa chỉ" stack-label class="q-ma-xs col-md" v-model="userProfile.addressLine1"
+            :disable="!isEditing" />
+          <q-input outlined stack-label label="Tỉnh/ thành phố" class="q-ma-xs col-md"
+            v-model="userProfile.cityProvince" :disable="!isEditing" />
+          <q-input outlined stack-label label="Quận huyện" class="q-ma-xs col-md" :disable="!isEditing"
+            v-model="userProfile.district" />
+          <q-input outlined stack-label label="Phường xã" class="q-ma-xs col-md" v-model="userProfile.ward"
+            :disable="!isEditing" />
         </q-card-section>
         <q-card-actions class="row">
           <div class="col-xs-12 col-md-auto row q-pa-xs">
-            <q-btn
-              :color="isEditing ? 'positive' : 'primary'"
-              @click="isEditing ? confirm() : enableEdit()"
-              outline
-              class="col-xs-12"
-            >
+            <q-btn :color="isEditing ? 'positive' : 'primary'" @click="isEditing ? confirm() : enableEdit()" outline
+              class="col-xs-12">
               {{ isEditing ? "Xác nhận" : "Chỉnh sửa" }}
             </q-btn>
           </div>
 
           <div class="col-xs-12 col-md-auto row q-pa-xs">
-            <q-btn
-              color="negative"
-              @click="cancelEdit()"
-              outline
-              :class="{ hidden: !isEditing }"
-              class="col-xs-12"
-            >
+            <q-btn color="negative" @click="cancelEdit()" outline :class="{ hidden: !isEditing }" class="col-xs-12">
               Hủy
             </q-btn>
           </div>
@@ -159,13 +93,7 @@
 
         <q-card-actions align="right">
           <q-btn flat label="Hủy" color="negative" v-close-popup />
-          <q-btn
-            flat
-            label="Xác nhận"
-            color="positive"
-            @click="submit()"
-            v-close-popup
-          />
+          <q-btn flat label="Xác nhận" color="positive" @click="submit()" v-close-popup />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -177,6 +105,7 @@ import { useQuasar } from "quasar";
 import { UpdateUserProfileRequest } from "src/DTOs/request/UpdateUserProfileRequest";
 import { Profile } from "src/models/Profile";
 import { useUserStore } from "src/stores/user.store";
+import { ProfileVM } from "src/viewModels/ProfileVM";
 import { onBeforeMount, reactive, ref } from "vue";
 
 const isPwd = ref(true);
@@ -185,15 +114,15 @@ const isEditingPassword = ref(false);
 const isConfirming = ref(false);
 const newPwd = ref("");
 const userStore = useUserStore();
-const userProfile = ref(new Profile());
+const userProfile = ref(new ProfileVM());
 const $q = useQuasar();
 
 onBeforeMount(() => {
   userStore
     .getUserProfile()
     .then((profile) => {
-      console.log("Response" + profile);
-      if (profile) userProfile.value = profile;
+      if (profile) userProfile.value = { ...profile, birthdate: profile.birthdate?.toLocaleString(Intl.DateTimeFormat().resolvedOptions().locale, { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, year: 'numeric', month: 'numeric', day: 'numeric' }) };
+      console.log("Profile" + JSON.stringify(userProfile.value));
     })
     .catch((err) => console.log(err));
 });
@@ -222,7 +151,7 @@ function submit() {
   userStore
     .updateUserProfile(updateRequest)
     .then((profile) => {
-      if (profile) userProfile.value = profile;
+      if (profile) userProfile.value = { ...profile, birthdate: profile.birthdate?.toLocaleString() };
       $q.notify({
         message: "Đã cập nhật thông tin hồ sơ",
         color: "positive",
@@ -238,4 +167,5 @@ function submit() {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+</style>

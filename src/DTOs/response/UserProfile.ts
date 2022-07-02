@@ -6,7 +6,7 @@ export class UserProfile {
   password?: string;
   fullname?: string;
   addressLine1?: string;
-  birthday?: Date;
+  birthdate?: Date;
   email?: string;
   location_id?: string;
   location?: WardTownVillage;
