@@ -4,18 +4,29 @@ import { RouteRecordRaw } from "vue-router";
 const routes: RouteRecordRaw[] = [
   {
     path: "/",
+    name: "Default",
     redirect: "/login",
   },
   {
     path: "/login",
+    name: "Login",
     component: () => LoginPage,
   },
   {
     path: "/home",
+    name: "Home",
     component: () => import("layouts/MainLayout.vue"),
     children: [
-      { path: "", component: () => import("pages/IndexPage.vue") },
-      { path: "profile", component: () => import("pages/ProfilePage.vue") },
+      {
+        path: "",
+        name: "Index",
+        component: () => import("pages/IndexPage.vue"),
+      },
+      {
+        path: "profile",
+        name: "Profile",
+        component: () => import("pages/ProfilePage.vue"),
+      },
     ],
   },
 
