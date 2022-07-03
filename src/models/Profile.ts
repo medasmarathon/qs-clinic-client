@@ -1,3 +1,4 @@
+import { WardTownVillage } from "src/DTOs/response/Location";
 import { Role } from "src/DTOs/response/Role";
 
 export class Profile {
@@ -6,9 +7,7 @@ export class Profile {
   birthdate?: Date;
   phoneNumber?: string[] = [];
   addressLine1?: string;
-  cityProvince?: string;
-  district?: string;
-  ward?: string;
+  location?: WardTownVillage;
   email?: string;
   roles?: Role[];
 }
