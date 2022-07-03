@@ -122,9 +122,7 @@
           <location-input-group
             v-model:is-editing="isEditing"
             v-model:address-line1="userProfile.addressLine1"
-            v-model:city-province="userProfile.cityProvince"
-            v-model:district="userProfile.district"
-            v-model:ward-town="userProfile.ward"
+            v-model:location-id="userProfile.locationId"
           >
           </location-input-group>
         </q-card-section>

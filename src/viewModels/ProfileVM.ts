@@ -6,9 +6,7 @@ export class ProfileVM {
   birthdate?: string;
   phoneNumber?: string[] = [];
   addressLine1?: string;
-  cityProvince?: string;
-  district?: string;
-  ward?: string;
+  locationId?: string;
   email?: string;
   roles?: Role[];
 }

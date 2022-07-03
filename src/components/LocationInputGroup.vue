@@ -19,9 +19,9 @@
       input-debounce="300"
       :options="cityOptions"
       @filter="filterCityProvinces"
-      :model-value="cityProvince"
-      @update:model-value="(val) => $emit('update:cityProvince', val.label)"
+      v-model="selectedCityProvince"
       class="q-ma-xs col-md"
+      :disable="!isEditing"
     >
       <template v-slot:no-option>
         <q-item>
@@ -38,9 +38,9 @@
       input-debounce="300"
       :options="districtOptions"
       @filter="filterDistrict"
-      :model-value="districtId"
-      @update:model-value="(val) => $emit('update:district', val.label)"
+      v-model="selectedDistrict"
       class="q-ma-xs col-md"
+      :disable="!isEditing"
     >
       <template v-slot:no-option>
         <q-item>
@@ -50,66 +50,75 @@
         </q-item>
       </template>
     </q-select>
-    <q-input
-      outlined
-      stack-label
-      label="Tỉnh/ thành phố"
-      class="q-ma-xs col-md"
-      :model-value="cityProvince"
-      @update:model-value="(val) => $emit('update:cityProvince', val)"
-      :disable="!isEditing"
-    />
-    <q-input
-      outlined
-      stack-label
-      label="Quận huyện"
-      class="q-ma-xs col-md"
-      :disable="!isEditing"
-      :model-value="district"
-      @update:model-value="(val) => $emit('update:district', val)"
-    />
-    <q-input
-      outlined
-      stack-label
+
+    <q-select
       label="Phường xã"
+      use-input
+      input-debounce="300"
+      :options="wardTownOptions"
+      @filter="filterWardTownVillage"
+      v-model="selectedWardTownVillage"
+      @blur="updateLocation"
       class="q-ma-xs col-md"
-      :model-value="wardTown"
-      @update:model-value="(val) => $emit('update:wardTown', val)"
       :disable="!isEditing"
-    />
+    >
+      <template v-slot:no-option>
+        <q-item>
+          <q-item-section class="text-grey">
+            Không tìm thấy lựa chọn
+          </q-item-section>
+        </q-item>
+      </template>
+    </q-select>
   </div>
 </template>
 
 <script setup lang="ts">
 import { QSelect, QSelectOption, QSelectProps } from "quasar";
-import { CityProvince, District } from "src/DTOs/response/Location";
+import {
+  CityProvince,
+  District,
+  WardTownVillage,
+} from "src/DTOs/response/Location";
 import { useLocationStore } from "src/stores";
-import { defineProps, reactive, defineEmits, ref } from "vue";
+import { defineProps, reactive, defineEmits, ref, onBeforeMount } from "vue";
 
 const props = defineProps<{
   isEditing: boolean;
   addressLine1?: string;
-  wardTown?: string;
-  district?: string;
-  cityProvince?: string;
   locationId?: string;
 }>();
 
-const cityProvinceId = ref("");
-const districtId = ref("");
-const wardTownId = ref("");
+const selectedCityProvince = ref(null as QSelectOption<CityProvince> | null);
+const selectedDistrict = ref(null as QSelectOption<District> | null);
+const selectedWardTownVillage = ref(
+  null as QSelectOption<WardTownVillage> | null
+);
 
-const emits = defineEmits([
-  "update:addressLine1",
-  "update:cityProvince",
-  "update:district",
-  "update:wardTown",
-]);
+const emits = defineEmits(["update:addressLine1", "update:locationId"]);
 
 const cityOptions = ref([] as QSelectOption<CityProvince>[]);
-const districtOptions = ref([] as QSelectOption<CityProvince>[]);
+const districtOptions = ref([] as QSelectOption<District>[]);
+const wardTownOptions = ref([] as QSelectOption<WardTownVillage>[]);
 
 const locationStore = useLocationStore();
+
+onBeforeMount(() => {
+  if (props.locationId)
+    locationStore.getLocation(props.locationId).then((wardTown) => {
+      selectedWardTownVillage.value = toWardTownOption(wardTown);
+      selectedDistrict.value = wardTown.district
+        ? toCityProvinceOption(wardTown.district)
+        : selectedDistrict.value;
+      selectedCityProvince.value = wardTown.district?.city_province
+        ? toCityProvinceOption(wardTown.district?.city_province)
+        : selectedCityProvince.value;
+    });
+});
+
+function updateLocation() {
+  emits("update:locationId", selectedWardTownVillage.value?.value.id);
+}
 
 function toCityProvinceOption(
   cityProvince: CityProvince
@@ -153,12 +162,44 @@ function toDistrictOption(district: District): QSelectOption<District> {
 const filterDistrict: QSelectProps["onFilter"] = (input: string, update) => {
   update(() => {
     locationStore
-      .getDistrictAutocomplete(input, props.cityProvince ?? "")
+      .getDistrictAutocomplete(
+        input,
+        selectedCityProvince.value ? selectedCityProvince.value.value?.id : ""
+      )
       .then((values) => {
-        console.log(cityProvinceId.value);
         if (values && values.length > 0) {
           districtOptions.value = values.map((value) =>
             toDistrictOption(value)
+          );
+        }
+      });
+  });
+};
+
+function toWardTownOption(
+  wardTown: WardTownVillage
+): QSelectOption<WardTownVillage> {
+  return {
+    value: wardTown,
+    label: wardTown.name ?? "",
+  };
+}
+
+const filterWardTownVillage: QSelectProps["onFilter"] = (
+  input: string,
+  update
+) => {
+  update(() => {
+    locationStore
+      .getWardTownVillageAutocomplete(
+        input,
+        selectedDistrict.value ? selectedDistrict.value.value.id : "",
+        selectedCityProvince.value ? selectedCityProvince.value.value?.id : ""
+      )
+      .then((values) => {
+        if (values && values.length > 0) {
+          wardTownOptions.value = values.map((value) =>
+            toWardTownOption(value)
           );
         }
       });
