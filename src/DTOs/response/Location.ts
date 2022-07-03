@@ -1,18 +1,18 @@
 export class WardTownVillage {
-  id!: String;
-  name?: String;
-  type?: String;
+  id!: string;
+  name?: string;
+  type?: string;
   district?: District;
 }
 export class District {
-  id!: String;
-  name?: String;
-  type?: String;
+  id!: string;
+  name?: string;
+  type?: string;
   city_province?: CityProvince;
 }
 export class CityProvince {
-  id!: String;
-  name?: String;
-  type?: String;
-  slug?: String;
+  id!: string;
+  name?: string;
+  type?: string;
+  slug?: string;
 }

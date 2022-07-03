@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 import { httpRequest } from "src/infrastructure/request";
 import getErrorMessage from "src/infrastructure/errorHandling";
 import Router from "src/router";
-import { API } from "src/globals";
+import { API, BASE_URL } from "src/globals";
 import { debounce } from "quasar";
 import {
   CityProvince,
@@ -26,68 +26,65 @@ export const useLocationStore = defineStore({
       wardTownVillageId: string
     ): Promise<WardTownVillage> {
       return await httpRequest.get<WardTownVillage>(
-        `${API.WardTownVillage}/${wardTownVillageId}`
+        `${BASE_URL}${API.WardTownVillage}/${wardTownVillageId}`
       );
     },
     async getCityProvince(cityProvinceId: string): Promise<CityProvince> {
       return await httpRequest.get<CityProvince>(
-        `${API.CityProvince}/${cityProvinceId}`
+        `${BASE_URL}${API.CityProvince}/${cityProvinceId}`
       );
     },
     async getDistrict(districtId: string): Promise<District> {
-      return await httpRequest.get<District>(`${API.District}/${districtId}`);
+      return await httpRequest.get<District>(
+        `${BASE_URL}${API.District}/${districtId}`
+      );
     },
     async getAllWardTownVillage(): Promise<WardTownVillage[]> {
-      return await httpRequest.get<WardTownVillage[]>(`${API.WardTownVillage}`);
+      return await httpRequest.get<WardTownVillage[]>(
+        `${BASE_URL}${API.WardTownVillage}`
+      );
     },
     async getAllCityProvince(): Promise<CityProvince[]> {
-      return await httpRequest.get<CityProvince[]>(`${API.CityProvince}`);
+      return await httpRequest.get<CityProvince[]>(
+        `${BASE_URL}${API.CityProvince}`
+      );
     },
     async getAllDistrict(): Promise<District[]> {
-      return await httpRequest.get<District[]>(`${API.District}`);
+      return await httpRequest.get<District[]>(`${BASE_URL}${API.District}`);
     },
     async getWardTownVillageAutocomplete(
       term: string,
       districtId: string,
       cityProvinceId: string
     ): Promise<WardTownVillage[]> {
-      const search = async (t: string, d: string, cp: string) => {
-        let searchParams = new URLSearchParams({
-          term: t,
-          districtId: d,
-          cityProvinceId: cp,
-        });
-        return await httpRequest.get<WardTownVillage[]>(
-          `${API.WardTownVillage}?${searchParams}`
-        );
-      };
-      return debounce(search, 500)(term, districtId, cityProvinceId);
+      let searchParams = new URLSearchParams({
+        term: term,
+        districtId: districtId,
+        cityProvinceId: cityProvinceId,
+      });
+      return await httpRequest.get<WardTownVillage[]>(
+        `${BASE_URL}${API.WardTownVillage}?${searchParams}`
+      );
     },
     async getCityProvinceAutocomplete(term: string): Promise<CityProvince[]> {
-      const search = async (t: string) => {
-        let searchParams = new URLSearchParams({
-          term: t,
-        });
-        return await httpRequest.get<CityProvince[]>(
-          `${API.CityProvince}?${searchParams}`
-        );
-      };
-      return debounce(search, 500)(term);
+      let searchParams = new URLSearchParams();
+      if (term) searchParams.set("term", term);
+      return await httpRequest.get<CityProvince[]>(
+        `${BASE_URL}${API.CityProvince}?${searchParams}`
+      );
     },
     async getDistrictAutocomplete(
       term: string,
       cityProvinceId: string
     ): Promise<District[]> {
-      const search = async (t: string, cp: string) => {
-        let searchParams = new URLSearchParams({
-          term: t,
-          cityProvinceId: cp,
-        });
+      let searchParams = new URLSearchParams();
+      if (term) searchParams.set("term", term);
+      if (cityProvinceId) searchParams.set("cityProvinceId", cityProvinceId);
+      if (!!searchParams.toString())
         return await httpRequest.get<District[]>(
-          `${API.District}?${searchParams}`
+          `${BASE_URL}${API.District}?${searchParams}`
         );
-      };
-      return debounce(search, 500)(term, cityProvinceId);
+      return await httpRequest.get<District[]>(`${BASE_URL}${API.District}`);
     },
   },
 });
