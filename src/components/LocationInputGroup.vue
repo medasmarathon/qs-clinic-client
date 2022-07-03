@@ -90,6 +90,7 @@ import {
   onBeforeMount,
   onMounted,
   watch,
+  watchEffect,
 } from "vue";
 
 const props = defineProps<{
@@ -125,7 +126,22 @@ const wardTownOptions = ref([] as QSelectOption<WardTownVillage>[]);
 const locationStore = useLocationStore();
 
 function updateLocation() {
-  emits("update:location", selectedWardTownVillage.value?.value);
+  let newLocation = new WardTownVillage();
+  if (!selectedWardTownVillage.value) return;
+  newLocation = {
+    ...selectedWardTownVillage.value.value,
+    district: selectedDistrict.value
+      ? {
+          ...selectedDistrict.value.value,
+          city_province: selectedCityProvince.value
+            ? {
+                ...selectedCityProvince.value.value,
+              }
+            : new CityProvince(),
+        }
+      : new District(),
+  };
+  emits("update:location", newLocation);
 }
 
 function toCityProvinceOption(

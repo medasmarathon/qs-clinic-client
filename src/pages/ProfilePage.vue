@@ -180,16 +180,18 @@ import { UpdateUserProfileRequest } from "src/DTOs/request/UpdateUserProfileRequ
 import LocationInputGroup from "src/components/LocationInputGroup.vue";
 import { useUserStore } from "src/stores/user.store";
 import { ProfileVM } from "src/viewModels/ProfileVM";
-import { onBeforeMount, reactive, ref } from "vue";
+import { onBeforeMount, onBeforeUpdate, reactive, ref, toRef } from "vue";
 import dayjs from "dayjs";
+import { computed } from "@vue/reactivity";
 
 const isPwd = ref(true);
 const isEditing = ref(false);
 const isEditingPassword = ref(false);
 const isConfirming = ref(false);
 const newPwd = ref("");
-const userStore = useUserStore();
 const userProfile = ref(new ProfileVM());
+
+const userStore = useUserStore();
 const $q = useQuasar();
 
 onBeforeMount(() => {
@@ -229,7 +231,10 @@ function submit() {
   isEditing.value = false;
   console.log(userProfile);
   let updateRequest = new UpdateUserProfileRequest();
-  updateRequest = { ...userProfile.value };
+  updateRequest = {
+    ...userProfile.value,
+    locationId: userProfile.value?.location?.id,
+  };
   userStore
     .updateUserProfile(updateRequest)
     .then((profile) => {
