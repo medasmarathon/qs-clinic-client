@@ -122,7 +122,7 @@
           <location-input-group
             v-model:is-editing="isEditing"
             v-model:address-line1="userProfile.addressLine1"
-            v-model:location-id="userProfile.locationId"
+            v-model:location="userProfile.location"
           >
           </location-input-group>
         </q-card-section>
@@ -226,6 +226,7 @@ function confirm() {
 }
 function submit() {
   isConfirming.value = false;
+  isEditing.value = false;
   console.log(userProfile);
   let updateRequest = new UpdateUserProfileRequest();
   updateRequest = { ...userProfile.value };

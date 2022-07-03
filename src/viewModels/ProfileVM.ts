@@ -1,3 +1,4 @@
+import { WardTownVillage } from "src/DTOs/response/Location";
 import { Role } from "src/DTOs/response/Role";
 
 export class ProfileVM {
@@ -6,7 +7,7 @@ export class ProfileVM {
   birthdate?: string;
   phoneNumber?: string[] = [];
   addressLine1?: string;
-  locationId?: string;
+  location?: WardTownVillage;
   email?: string;
   roles?: Role[];
 }

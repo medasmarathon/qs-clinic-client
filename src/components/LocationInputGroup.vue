@@ -74,6 +74,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed, toRef } from "@vue/reactivity";
 import { QSelect, QSelectOption, QSelectProps } from "quasar";
 import {
   CityProvince,
@@ -81,13 +82,25 @@ import {
   WardTownVillage,
 } from "src/DTOs/response/Location";
 import { useLocationStore } from "src/stores";
-import { defineProps, reactive, defineEmits, ref, onBeforeMount } from "vue";
+import {
+  defineProps,
+  reactive,
+  defineEmits,
+  ref,
+  onBeforeMount,
+  onMounted,
+  watch,
+} from "vue";
 
 const props = defineProps<{
   isEditing: boolean;
   addressLine1?: string;
-  locationId?: string;
+  location?: WardTownVillage;
 }>();
+
+const emits = defineEmits(["update:addressLine1", "update:location"]);
+
+const userLocation = toRef(props, "location");
 
 const selectedCityProvince = ref(null as QSelectOption<CityProvince> | null);
 const selectedDistrict = ref(null as QSelectOption<District> | null);
@@ -95,7 +108,15 @@ const selectedWardTownVillage = ref(
   null as QSelectOption<WardTownVillage> | null
 );
 
-const emits = defineEmits(["update:addressLine1", "update:locationId"]);
+watch(userLocation, (location) => {
+  selectedCityProvince.value = location?.district?.city_province
+    ? toCityProvinceOption(location.district.city_province)
+    : null;
+  selectedDistrict.value = location?.district
+    ? toDistrictOption(location.district)
+    : null;
+  selectedWardTownVillage.value = location ? toWardTownOption(location) : null;
+});
 
 const cityOptions = ref([] as QSelectOption<CityProvince>[]);
 const districtOptions = ref([] as QSelectOption<District>[]);
@@ -103,21 +124,8 @@ const wardTownOptions = ref([] as QSelectOption<WardTownVillage>[]);
 
 const locationStore = useLocationStore();
 
-onBeforeMount(() => {
-  if (props.locationId)
-    locationStore.getLocation(props.locationId).then((wardTown) => {
-      selectedWardTownVillage.value = toWardTownOption(wardTown);
-      selectedDistrict.value = wardTown.district
-        ? toCityProvinceOption(wardTown.district)
-        : selectedDistrict.value;
-      selectedCityProvince.value = wardTown.district?.city_province
-        ? toCityProvinceOption(wardTown.district?.city_province)
-        : selectedCityProvince.value;
-    });
-});
-
 function updateLocation() {
-  emits("update:locationId", selectedWardTownVillage.value?.value.id);
+  emits("update:location", selectedWardTownVillage.value?.value);
 }
 
 function toCityProvinceOption(
