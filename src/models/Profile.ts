@@ -1,13 +1,14 @@
-import { WardTownVillage } from "src/DTOs/response/Location";
-import { Role } from "src/DTOs/response/Role";
+import { WardTownVillageResponse } from "src/DTOs/response/LocationResponse";
+import { RoleResponse } from "src/DTOs/response/RoleResponse";
 
 export class Profile {
+  id?: string;
   username!: string;
   fullname?: string;
   birthdate?: Date;
   phoneNumber?: string[] = [];
   addressLine1?: string;
-  location?: WardTownVillage;
+  location?: WardTownVillageResponse;
   email?: string;
-  roles?: Role[];
+  roles?: RoleResponse[];
 }

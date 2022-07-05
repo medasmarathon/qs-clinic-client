@@ -1,4 +1,4 @@
-export class Role {
+export class RoleResponse {
   role_name?: String;
   reception_allowed?: boolean = false;
   examination_allowed?: boolean = false;

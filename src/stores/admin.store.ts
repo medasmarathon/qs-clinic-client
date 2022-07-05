@@ -10,11 +10,9 @@ export const useUserStore = defineStore({
   state: () => ({
     profile: null as Profile | null,
   }),
-  getters: {
-    getRoles: (state) => state.profile?.roles ?? [],
-  },
+  getters: {},
   actions: {
-    async getUserProfile(): Promise<Profile | null> {
+    async getAllUsers(): Promise<Profile | null> {
       let userProfile =
         this.profile ??
         (await httpRequest.get<UserProfileResponse>(
