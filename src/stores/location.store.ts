@@ -63,13 +63,16 @@ export const useLocationStore = defineStore({
       districtId: string,
       cityProvinceId: string
     ): Promise<WardTownVillageResponse[]> {
-      let searchParams = new URLSearchParams({
-        term: term,
-        districtId: districtId,
-        cityProvinceId: cityProvinceId,
-      });
+      let searchParams = new URLSearchParams();
+      if (term) searchParams.set("term", term);
+      if (cityProvinceId) searchParams.set("cityProvinceId", cityProvinceId);
+      if (districtId) searchParams.set("districtId", districtId);
+      if (!!searchParams.toString())
+        return await httpRequest.get<WardTownVillageResponse[]>(
+          `${BASE_URL}${API.WardTownVillage}?${searchParams}`
+        );
       return await httpRequest.get<WardTownVillageResponse[]>(
-        `${BASE_URL}${API.WardTownVillage}?${searchParams}`
+        `${BASE_URL}${API.WardTownVillage}`
       );
     },
     async getCityProvinceAutocomplete(
@@ -77,8 +80,12 @@ export const useLocationStore = defineStore({
     ): Promise<CityProvinceResponse[]> {
       let searchParams = new URLSearchParams();
       if (term) searchParams.set("term", term);
+      if (!!searchParams.toString())
+        return await httpRequest.get<CityProvinceResponse[]>(
+          `${BASE_URL}${API.CityProvince}?${searchParams}`
+        );
       return await httpRequest.get<CityProvinceResponse[]>(
-        `${BASE_URL}${API.CityProvince}?${searchParams}`
+        `${BASE_URL}${API.CityProvince}`
       );
     },
     async getDistrictAutocomplete(

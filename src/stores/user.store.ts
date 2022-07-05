@@ -14,6 +14,11 @@ export const useUserStore = defineStore({
     getRoles: (state) => state.profile?.roles ?? [],
   },
   actions: {
+    mapResponseToProfile(response: UserProfileResponse) {
+      let profile = new Profile();
+      profile = { ...response };
+      return profile;
+    },
     async getUserProfile(): Promise<Profile | null> {
       let userProfile =
         this.profile ??
@@ -22,8 +27,7 @@ export const useUserStore = defineStore({
         ));
       console.log(userProfile);
       if (userProfile) {
-        this.profile = new Profile();
-        this.profile = { ...userProfile };
+        this.profile = this.mapResponseToProfile(userProfile);
         return this.profile;
       }
       return null;
@@ -37,8 +41,7 @@ export const useUserStore = defineStore({
       );
       console.log(userProfile);
       if (userProfile) {
-        this.profile = new Profile();
-        this.profile = { ...userProfile };
+        this.profile = this.mapResponseToProfile(userProfile);
         return this.profile;
       }
       return null;
