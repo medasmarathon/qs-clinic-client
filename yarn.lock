@@ -912,7 +912,7 @@ __metadata:
     dayjs: ^1.11.3
     dotenv: ^16.0.1
     pinia: ^2.0.14
-    quasar: ^2.7.3
+    quasar: ^2.7.5
     typescript: ^4.7.4
     vue: ^3.2.37
     vue-router: ^4.0.16
@@ -3105,10 +3105,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"quasar@npm:^2.7.3":
-  version: 2.7.3
-  resolution: "quasar@npm:2.7.3"
-  checksum: 42ae066c7a7e477731e3063bfa6b097bc89a670dac4781dd3e72d3c16e0db61a909f09eea21ef342592953fd6167f80a4c9add20722d4df0229616d3a86f5810
+"quasar@npm:^2.7.5":
+  version: 2.7.5
+  resolution: "quasar@npm:2.7.5"
+  checksum: 0ed975f2051ffbb7dd4180a6a9c3b2da7b4696df1896407ea4ec71da3168b9fcde3d43f96323caf7f4fea8cd7d89f03b6426e628c4b718b2b238d330a5f5054d
   languageName: node
   linkType: hard
 

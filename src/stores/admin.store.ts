@@ -48,5 +48,5 @@ export const useAdminStore = defineStore("admin", () => {
     return null;
   }
 
-  return { users, getMultipleUsers };
+  return { users, getMultipleUsers, getUserById };
 });

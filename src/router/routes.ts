@@ -1,4 +1,5 @@
 import LoginPage from "src/pages/LoginPage.vue";
+import ProfilePage from "src/pages/ProfilePage.vue";
 import { RouteRecordRaw } from "vue-router";
 
 const routes: RouteRecordRaw[] = [
@@ -29,7 +30,18 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
-
+  {
+    path: "/admin",
+    name: "Admin",
+    component: () => import("layouts/MainLayout.vue"),
+    children: [
+      {
+        path: "user-management",
+        name: "UserManagement",
+        component: () => import("pages/admin/UserManagement.vue"),
+      },
+    ],
+  },
   // Always leave this as last one,
   // but you can also remove it
   {

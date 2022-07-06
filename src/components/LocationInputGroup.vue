@@ -77,15 +77,13 @@
 import { computed, toRef } from "@vue/reactivity";
 import { QSelect, QSelectOption, QSelectProps } from "quasar";
 import {
-  CityProvince,
-  District,
-  WardTownVillage,
-} from "src/DTOs/response/Location";
+  CityProvinceResponse,
+  DistrictResponse,
+  WardTownVillageResponse,
+} from "src/DTOs/response/LocationResponse";
 import { useLocationStore } from "src/stores";
 import {
-  defineProps,
   reactive,
-  defineEmits,
   ref,
   onBeforeMount,
   onMounted,
@@ -96,17 +94,19 @@ import {
 const props = defineProps<{
   isEditing: boolean;
   addressLine1?: string;
-  location?: WardTownVillage;
+  location?: WardTownVillageResponse;
 }>();
 
 const emits = defineEmits(["update:addressLine1", "update:location"]);
 
 const userLocation = toRef(props, "location");
 
-const selectedCityProvince = ref(null as QSelectOption<CityProvince> | null);
-const selectedDistrict = ref(null as QSelectOption<District> | null);
+const selectedCityProvince = ref(
+  null as QSelectOption<CityProvinceResponse> | null
+);
+const selectedDistrict = ref(null as QSelectOption<DistrictResponse> | null);
 const selectedWardTownVillage = ref(
-  null as QSelectOption<WardTownVillage> | null
+  null as QSelectOption<WardTownVillageResponse> | null
 );
 
 watch(userLocation, (location) => {
@@ -119,14 +119,14 @@ watch(userLocation, (location) => {
   selectedWardTownVillage.value = location ? toWardTownOption(location) : null;
 });
 
-const cityOptions = ref([] as QSelectOption<CityProvince>[]);
-const districtOptions = ref([] as QSelectOption<District>[]);
-const wardTownOptions = ref([] as QSelectOption<WardTownVillage>[]);
+const cityOptions = ref([] as QSelectOption<CityProvinceResponse>[]);
+const districtOptions = ref([] as QSelectOption<DistrictResponse>[]);
+const wardTownOptions = ref([] as QSelectOption<WardTownVillageResponse>[]);
 
 const locationStore = useLocationStore();
 
 function updateLocation() {
-  let newLocation = new WardTownVillage();
+  let newLocation = new WardTownVillageResponse();
   if (!selectedWardTownVillage.value) return;
   newLocation = {
     ...selectedWardTownVillage.value.value,
@@ -137,16 +137,16 @@ function updateLocation() {
             ? {
                 ...selectedCityProvince.value.value,
               }
-            : new CityProvince(),
+            : new CityProvinceResponse(),
         }
-      : new District(),
+      : new DistrictResponse(),
   };
   emits("update:location", newLocation);
 }
 
 function toCityProvinceOption(
-  cityProvince: CityProvince
-): QSelectOption<CityProvince> {
+  cityProvince: CityProvinceResponse
+): QSelectOption<CityProvinceResponse> {
   return {
     value: cityProvince,
     label: cityProvince.name ?? "",
@@ -176,7 +176,9 @@ const filterCityProvinces: QSelectProps["onFilter"] = (
     });
 };
 
-function toDistrictOption(district: District): QSelectOption<District> {
+function toDistrictOption(
+  district: DistrictResponse
+): QSelectOption<DistrictResponse> {
   return {
     value: district,
     label: district.name ?? "",
@@ -201,8 +203,8 @@ const filterDistrict: QSelectProps["onFilter"] = (input: string, update) => {
 };
 
 function toWardTownOption(
-  wardTown: WardTownVillage
-): QSelectOption<WardTownVillage> {
+  wardTown: WardTownVillageResponse
+): QSelectOption<WardTownVillageResponse> {
   return {
     value: wardTown,
     label: wardTown.name ?? "",
