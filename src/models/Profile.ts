@@ -6,7 +6,7 @@ export class Profile {
   username!: string;
   fullname?: string;
   birthdate?: Date;
-  phoneNumber?: string[] = [];
+  phone?: string[] = [];
   addressLine1?: string;
   location?: WardTownVillageResponse;
   email?: string;

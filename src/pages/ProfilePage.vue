@@ -20,6 +20,7 @@
             :type="isPwd ? 'password' : 'text'"
             label="Mật khẩu mới"
             class="col-md q-ma-xs"
+            :class="{ hidden: !isEditingPassword }"
             v-model="newPwd"
             :disable="!isEditingPassword"
           >
@@ -99,14 +100,16 @@
               </q-icon>
             </template>
           </q-input>
-          <q-input
-            outlined
-            stack-label
+          <q-select
             label="Số điện thoại"
+            outlined
+            multiple
+            use-chips
+            v-model="userProfile.phone"
+            use-input
+            hide-dropdown-icon
+            @new-value="createNewPhoneNumber"
             class="q-ma-xs col-md"
-            :modelValue="
-              userProfile.phoneNumber ? userProfile.phoneNumber[0] : ''
-            "
             :disable="!isEditing"
           />
           <q-input
@@ -190,6 +193,7 @@ const isEditingPassword = ref(false);
 const isConfirming = ref(false);
 const newPwd = ref("");
 const userProfile = ref(new ProfileVM());
+const phoneNumbers = ref<string[]>([]);
 
 const userStore = useUserStore();
 const $q = useQuasar();
@@ -198,18 +202,25 @@ onBeforeMount(() => {
   userStore
     .getUserProfile()
     .then((profile) => {
-      if (profile)
+      if (profile) {
         userProfile.value = {
           ...profile,
+          phone: profile.phone ?? [],
+          password: "",
           birthdate: dayjs(profile.birthdate)
             .locale(Intl.DateTimeFormat().resolvedOptions().locale)
             .format("YYYY MM DD"),
         };
+        phoneNumbers.value = userProfile.value.phone;
+      }
       console.log("Profile" + JSON.stringify(userProfile.value));
     })
     .catch((err) => console.log(err));
 });
 
+function createNewPhoneNumber(val: string, done: Function) {
+  done(val, "add-unique");
+}
 function enableEdit() {
   isEditing.value = true;
 }
@@ -233,14 +244,18 @@ function submit() {
   let updateRequest = new UpdateUserProfileRequest();
   updateRequest = {
     ...userProfile.value,
+    phone: userProfile.value.phone,
     locationId: userProfile.value?.location?.id,
   };
+  if (updateRequest.password === "") delete updateRequest.password;
+  if (updateRequest.email === "") delete updateRequest.email;
   userStore
     .updateUserProfile(updateRequest)
     .then((profile) => {
       if (profile)
         userProfile.value = {
           ...profile,
+          phone: profile.phone ?? [],
           birthdate: dayjs(profile.birthdate)
             .locale(Intl.DateTimeFormat().resolvedOptions().locale)
             .format("YYYY MM DD"),

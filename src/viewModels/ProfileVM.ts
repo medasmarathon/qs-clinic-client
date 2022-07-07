@@ -4,9 +4,10 @@ import { RoleResponse } from "src/DTOs/response/RoleResponse";
 export class ProfileVM {
   id?: string;
   username!: string;
+  password?: string;
   fullname?: string;
   birthdate?: string;
-  phoneNumber?: string[] = [];
+  phone: string[] = [];
   addressLine1?: string;
   location?: WardTownVillageResponse;
   email?: string;
