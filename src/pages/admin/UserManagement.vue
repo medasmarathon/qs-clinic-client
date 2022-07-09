@@ -53,7 +53,7 @@
           outline
           color="primary"
           icon="add"
-          @click="addUser(new ProfileVM())"
+          @click="addUser()"
         >
           <template slot="prepend">
             <q-icon name="add" color="primary"></q-icon>
@@ -81,7 +81,7 @@
       <q-card>
         <q-card-section class="row items-center">
           <span class="q-ml-sm">
-            Xác nhận xóa người dùng {{ currentEditedUser.username }} ?
+            Xác nhận xóa người dùng <b>{{ currentEditedUser.username }}</b> ?
           </span>
         </q-card-section>
 
@@ -148,17 +148,17 @@ function editUser(user: ProfileVM) {
 }
 
 function confirmEditUser(user: ProfileVM) {
-  console.log("edit " + user.id);
+  console.log("edit " + JSON.stringify(user));
 }
 
 function confirmDeleteUser(user: ProfileVM) {
   console.log("delete " + user.id);
 }
 
-function addUser(user: ProfileVM) {
+function addUser() {
+  currentEditedUser.value = new ProfileVM();
   isEditingUser.value = true;
-  currentEditedUser.value = user;
-  console.log("add " + JSON.stringify(user));
+  console.log("add " + JSON.stringify(currentEditedUser.value));
 }
 </script>
 

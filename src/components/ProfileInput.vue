@@ -189,7 +189,7 @@ function confirm() {
   cancelEdit();
   cancelEditPassword();
   emits("update:profile", userProfile);
-  emits("confirm", userProfile);
+  emits("confirm", userProfile.value);
 }
 </script>
 
