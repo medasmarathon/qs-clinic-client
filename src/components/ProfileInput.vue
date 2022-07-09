@@ -6,9 +6,9 @@
       </q-card-section>
       <q-card-section class="row">
         <q-input
-          filled
+          outlined
           label="Tên đăng nhập"
-          :disable="!!userProfile.username && !isNewProfile"
+          :disable="!isNewProfile || !isEditingPassword"
           stack-label
           class="col-md q-ma-xs"
           v-model="userProfile.username"
@@ -21,7 +21,7 @@
           class="col-md q-ma-xs"
           :class="{ hidden: !isEditingPassword && !isNewProfile }"
           v-model="newPwd"
-          :disable="!isEditingPassword && !isNewProfile"
+          :disable="!isEditingPassword"
         >
           <template v-slot:append>
             <q-icon
@@ -178,7 +178,7 @@ const isNewProfile = toRef(props, "forNew");
 
 const isPwd = ref(true);
 const isEditing = ref(false);
-const isEditingPassword = ref(false);
+const isEditingPassword = ref(props.forNew);
 const newPwd = ref("");
 
 const $q = useQuasar();

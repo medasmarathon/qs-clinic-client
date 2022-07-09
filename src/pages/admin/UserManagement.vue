@@ -73,7 +73,7 @@
         <profile-input
           v-model:profile="currentEditedUser"
           @confirm="confirmEditUser"
-          :for-new="!!currentEditedUser.id"
+          :for-new="!currentEditedUser.id"
         ></profile-input>
       </div>
     </q-dialog>
