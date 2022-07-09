@@ -68,14 +68,7 @@ function confirm() {
 
 function submit() {
   isConfirming.value = false;
-  let updateRequest = new UpdateUserProfileRequest();
-  updateRequest = {
-    ...userProfile.value,
-    phone: userProfile.value.phone,
-    locationId: userProfile.value?.location?.id,
-  };
-  if (updateRequest.password === "") delete updateRequest.password;
-  if (updateRequest.email === "") delete updateRequest.email;
+  let updateRequest = UpdateUserProfileRequest.fromProfileVM(userProfile.value);
   userStore
     .updateUserProfile(updateRequest)
     .then((profile) => {

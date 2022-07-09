@@ -50,26 +50,42 @@
           class="q-pa-md"
           flat
           dense
-          round
+          outline
           color="primary"
           icon="add"
           @click="addUser()"
-        />
+        >
+          <template slot="prepend">
+            <q-icon name="add" color="primary"></q-icon>
+          </template>
+          Thêm người dùng
+        </q-btn>
       </q-markup-table>
     </q-card>
+    <q-dialog v-model="isEditingUser">
+      <profile-input
+        v-model:profile="currentEditedUser"
+        @confirm="confirmEditUser"
+      ></profile-input>
+    </q-dialog>
   </q-page>
 </template>
 
 <script setup lang="ts">
 import { ref } from "@vue/reactivity";
 import dayjs from "dayjs";
+import { useQuasar } from "quasar";
+import ProfileInput from "src/components/ProfileInput.vue";
 import { useAdminStore } from "src/stores";
 import { ProfileVM } from "src/viewModels/ProfileVM";
 import { onBeforeMount } from "vue";
 
 const adminStore = useAdminStore();
+const $q = useQuasar();
 
 const userProfiles = ref<ProfileVM[]>([]);
+const isEditingUser = ref(false);
+const currentEditedUser = ref<ProfileVM>(new ProfileVM());
 
 onBeforeMount(() => {
   adminStore
@@ -79,6 +95,8 @@ onBeforeMount(() => {
         userProfiles.value = profiles.map((profile) => {
           return {
             ...profile,
+            phone: profile.phone ?? [],
+            password: "",
             birthdate: dayjs(profile.birthdate)
               .locale(Intl.DateTimeFormat().resolvedOptions().locale)
               .format("YYYY MM DD"),
@@ -94,6 +112,10 @@ function deleteUser(user: ProfileVM) {
 }
 
 function editUser(user: ProfileVM) {
+  console.log("edit" + user.id);
+}
+
+function confirmEditUser(user: ProfileVM) {
   console.log("edit" + user.id);
 }
 
