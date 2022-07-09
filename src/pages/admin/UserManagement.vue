@@ -53,7 +53,7 @@
           outline
           color="primary"
           icon="add"
-          @click="addUser()"
+          @click="addUser(new ProfileVM())"
         >
           <template slot="prepend">
             <q-icon name="add" color="primary"></q-icon>
@@ -62,11 +62,40 @@
         </q-btn>
       </q-markup-table>
     </q-card>
+
     <q-dialog v-model="isEditingUser">
-      <profile-input
-        v-model:profile="currentEditedUser"
-        @confirm="confirmEditUser"
-      ></profile-input>
+      <div>
+        <q-bar class="row items-center bg-primary text-white">
+          <div class="text-h6">Chỉnh sửa thông tin người dùng</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-bar>
+        <profile-input
+          v-model:profile="currentEditedUser"
+          @confirm="confirmEditUser"
+        ></profile-input>
+      </div>
+    </q-dialog>
+
+    <q-dialog v-model="isDeletingUser">
+      <q-card>
+        <q-card-section class="row items-center">
+          <span class="q-ml-sm">
+            Xác nhận xóa người dùng {{ currentEditedUser.username }} ?
+          </span>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Hủy" color="negative" v-close-popup />
+          <q-btn
+            flat
+            label="Xác nhận"
+            color="positive"
+            @click="confirmDeleteUser(currentEditedUser)"
+            v-close-popup
+          />
+        </q-card-actions>
+      </q-card>
     </q-dialog>
   </q-page>
 </template>
@@ -85,6 +114,7 @@ const $q = useQuasar();
 
 const userProfiles = ref<ProfileVM[]>([]);
 const isEditingUser = ref(false);
+const isDeletingUser = ref(false);
 const currentEditedUser = ref<ProfileVM>(new ProfileVM());
 
 onBeforeMount(() => {
@@ -108,19 +138,27 @@ onBeforeMount(() => {
 });
 
 function deleteUser(user: ProfileVM) {
-  console.log("delete" + user.id);
+  isDeletingUser.value = true;
+  currentEditedUser.value = user;
 }
 
 function editUser(user: ProfileVM) {
-  console.log("edit" + user.id);
+  isEditingUser.value = true;
+  currentEditedUser.value = user;
 }
 
 function confirmEditUser(user: ProfileVM) {
-  console.log("edit" + user.id);
+  console.log("edit " + user.id);
 }
 
-function addUser() {
-  console.log("add user");
+function confirmDeleteUser(user: ProfileVM) {
+  console.log("delete " + user.id);
+}
+
+function addUser(user: ProfileVM) {
+  isEditingUser.value = true;
+  currentEditedUser.value = user;
+  console.log("add " + JSON.stringify(user));
 }
 </script>
 
