@@ -8,7 +8,7 @@
         <q-input
           filled
           label="Tên đăng nhập"
-          disable
+          :disable="!!userProfile.username && !isNewProfile"
           stack-label
           class="col-md q-ma-xs"
           v-model="userProfile.username"
@@ -19,9 +19,9 @@
           :type="isPwd ? 'password' : 'text'"
           label="Mật khẩu mới"
           class="col-md q-ma-xs"
-          :class="{ hidden: !isEditingPassword }"
+          :class="{ hidden: !isEditingPassword && !isNewProfile }"
           v-model="newPwd"
-          :disable="!isEditingPassword"
+          :disable="!isEditingPassword && !isNewProfile"
         >
           <template v-slot:append>
             <q-icon
@@ -160,15 +160,28 @@
 import { ProfileVM } from "src/viewModels/ProfileVM";
 import LocationInput from "src/components/LocationInput.vue";
 import { ref, toRef } from "vue";
+import { useQuasar } from "quasar";
 
-const props = defineProps<{ profile: ProfileVM }>();
+const props = defineProps({
+  profile: {
+    type: ProfileVM,
+    default: new ProfileVM(),
+  },
+  forNew: {
+    type: Boolean,
+    default: false,
+  },
+});
 const emits = defineEmits(["update:profile", "confirm"]);
 const userProfile = toRef(props, "profile");
+const isNewProfile = toRef(props, "forNew");
 
 const isPwd = ref(true);
 const isEditing = ref(false);
 const isEditingPassword = ref(false);
 const newPwd = ref("");
+
+const $q = useQuasar();
 
 function createNewPhoneNumber(phoneNumber: string, done: Function) {
   done(phoneNumber, "add-unique");
@@ -186,9 +199,19 @@ function cancelEditPassword() {
   isEditingPassword.value = false;
 }
 function confirm() {
+  if (!userProfile.value.username || !newPwd) {
+    $q.notify({
+      message: "Thiếu username hoặc password để khởi tạo người dùng mới",
+      color: "negative",
+    });
+    return;
+  }
+
+  userProfile.value.password = newPwd.value;
+  isNewProfile.value = false;
   cancelEdit();
   cancelEditPassword();
-  emits("update:profile", userProfile);
+  emits("update:profile", userProfile.value);
   emits("confirm", userProfile.value);
 }
 </script>

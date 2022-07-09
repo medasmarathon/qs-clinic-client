@@ -73,6 +73,7 @@
         <profile-input
           v-model:profile="currentEditedUser"
           @confirm="confirmEditUser"
+          :for-new="!!currentEditedUser.id"
         ></profile-input>
       </div>
     </q-dialog>
@@ -148,6 +149,7 @@ function editUser(user: ProfileVM) {
 }
 
 function confirmEditUser(user: ProfileVM) {
+  isEditingUser.value = false;
   console.log("edit " + JSON.stringify(user));
 }
 
