@@ -9,7 +9,7 @@ export class UserProfileResponse {
   addressLine1?: string;
   birthdate?: Date;
   email?: string;
-  location_id?: string;
+  locationId?: string;
   location?: WardTownVillageResponse;
   roles?: RoleResponse[];
 }

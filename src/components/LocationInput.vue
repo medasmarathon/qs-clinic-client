@@ -107,13 +107,13 @@ watch(userLocationProps, (value) => {
 
 const selectedCityProvince = computed({
   get(): QSelectOption<CityProvinceResponse> | null {
-    if (userLocation?.value?.district?.city_province?.name === undefined) {
-      return userLocationProps?.value?.district?.city_province
-        ? toCityProvinceOption(userLocationProps.value.district.city_province)
+    if (userLocation?.value?.district?.cityProvince?.name === undefined) {
+      return userLocationProps?.value?.district?.cityProvince
+        ? toCityProvinceOption(userLocationProps.value.district.cityProvince)
         : null;
     }
-    return userLocation?.value?.district?.city_province
-      ? toCityProvinceOption(userLocation.value.district.city_province)
+    return userLocation?.value?.district?.cityProvince
+      ? toCityProvinceOption(userLocation.value.district.cityProvince)
       : null;
   },
   set(selectedCityProvinceOption) {
@@ -121,7 +121,7 @@ const selectedCityProvince = computed({
 
     let newLocation = new WardTownVillageResponse();
     newLocation.district = new DistrictResponse();
-    newLocation.district.city_province = selectedCityProvinceOption.value;
+    newLocation.district.cityProvince = selectedCityProvinceOption.value;
     userLocation.value = newLocation;
   },
 });
@@ -141,7 +141,7 @@ const selectedDistrict = computed({
 
     let newLocation = new WardTownVillageResponse();
     newLocation.district = selectedDistrictOption.value;
-    newLocation.district.city_province = selectedCityProvince.value?.value;
+    newLocation.district.cityProvince = selectedCityProvince.value?.value;
     userLocation.value = newLocation;
   },
 });
@@ -159,7 +159,7 @@ const selectedWardTownVillage = computed({
       let newLocation = new WardTownVillageResponse();
       newLocation = selectedWardTownOption.value;
       newLocation.district = selectedDistrict.value.value;
-      newLocation.district.city_province = selectedCityProvince.value.value;
+      newLocation.district.cityProvince = selectedCityProvince.value.value;
       userLocation.value = newLocation;
     }
   },

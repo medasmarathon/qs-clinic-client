@@ -8,7 +8,7 @@ export class DistrictResponse {
   id: string = "";
   name?: string;
   type?: string;
-  city_province?: CityProvinceResponse;
+  cityProvince?: CityProvinceResponse;
 }
 export class CityProvinceResponse {
   id: string = "";
