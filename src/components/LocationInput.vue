@@ -107,7 +107,11 @@ watch(userLocationProps, (value) => {
 
 const selectedCityProvince = computed({
   get(): QSelectOption<CityProvinceResponse> | null {
-    if (userLocation?.value?.district?.city_province === undefined) return null;
+    if (userLocation?.value?.district?.city_province?.name === undefined) {
+      return userLocationProps?.value?.district?.city_province
+        ? toCityProvinceOption(userLocationProps.value.district.city_province)
+        : null;
+    }
     return userLocation?.value?.district?.city_province
       ? toCityProvinceOption(userLocation.value.district.city_province)
       : null;
@@ -123,7 +127,11 @@ const selectedCityProvince = computed({
 });
 const selectedDistrict = computed({
   get(): QSelectOption<DistrictResponse> | null {
-    if (userLocation?.value?.district === undefined) return null;
+    if (userLocation?.value?.district?.name === undefined) {
+      return userLocationProps?.value?.district
+        ? toDistrictOption(userLocationProps.value.district)
+        : null;
+    }
     return userLocation?.value?.district
       ? toDistrictOption(userLocation.value.district)
       : null;
@@ -139,7 +147,10 @@ const selectedDistrict = computed({
 });
 const selectedWardTownVillage = computed({
   get(): QSelectOption<WardTownVillageResponse> | null {
-    if (userLocation?.value === undefined) return null;
+    if (userLocation?.value.name === undefined)
+      return userLocationProps?.value
+        ? toWardTownOption(userLocationProps.value)
+        : null;
     return userLocation?.value ? toWardTownOption(userLocation.value) : null;
   },
   set(selectedWardTownOption) {

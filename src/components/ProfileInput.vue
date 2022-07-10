@@ -176,9 +176,9 @@ const emits = defineEmits(["update:profile", "confirm"]);
 const userProfileProps = toRef(props, "profile");
 const isNewProfile = toRef(props, "forNew");
 
-const userProfile = ref(new ProfileVM());
-watch(userProfileProps, (value) => {
-  userProfile.value = value;
+const userProfile = ref(userProfileProps.value);
+watch(userProfileProps, (profile) => {
+  userProfile.value = profile;
 });
 
 const isPwd = ref(true);
