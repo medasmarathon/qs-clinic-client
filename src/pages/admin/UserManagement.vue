@@ -139,7 +139,6 @@ function fetchUsers() {
               .format("YYYY MM DD"),
           };
         });
-      console.log("Profiles" + JSON.stringify(userProfiles.value));
     })
     .catch((err) => console.log(err));
 }
@@ -157,7 +156,6 @@ function editUser(user: ProfileVM) {
 function confirmUpsertUser(user: ProfileVM) {
   isEditingUser.value = false;
   if (user.id) {
-    console.log("update " + JSON.stringify(user));
     let updateRequest = UpdateUserProfileRequest.fromProfileVM(
       currentEditedUser.value
     );
@@ -188,7 +186,6 @@ function confirmUpsertUser(user: ProfileVM) {
     return;
   }
 
-  console.log("create " + JSON.stringify(user));
   let createRequest = CreateUserProfileRequest.fromProfileVM(
     currentEditedUser.value
   );
@@ -219,7 +216,6 @@ function confirmUpsertUser(user: ProfileVM) {
 }
 
 function confirmDeleteUser(user: ProfileVM) {
-  console.log("delete " + user.id);
   adminStore
     .deleteUserById(user.id!)
     .then(() => {

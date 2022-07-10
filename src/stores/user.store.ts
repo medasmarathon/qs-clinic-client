@@ -25,7 +25,6 @@ export const useUserStore = defineStore({
         (await httpRequest.get<UserProfileResponse>(
           `${BASE_URL}${API.UserProfile}`
         ));
-      console.log(userProfile);
       if (userProfile) {
         this.profile = this.mapResponseToProfile(userProfile);
         return this.profile;
@@ -39,7 +38,6 @@ export const useUserStore = defineStore({
         `${BASE_URL}${API.UserProfile}`,
         updateProfileRequest
       );
-      console.log(userProfile);
       if (userProfile) {
         this.profile = this.mapResponseToProfile(userProfile);
         return this.profile;

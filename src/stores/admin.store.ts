@@ -29,7 +29,6 @@ export const useAdminStore = defineStore("admin", () => {
       userProfileList = await httpRequest.get<UserProfileResponse[]>(
         `${BASE_URL}${API.Admin.MultipleUsers}`
       );
-    console.log(userProfileList);
     if (userProfileList) {
       users.value = userProfileList.map(userStore.mapResponseToProfile);
       return users.value;
@@ -41,7 +40,6 @@ export const useAdminStore = defineStore("admin", () => {
     let userProfile = await httpRequest.get<UserProfileResponse>(
       `${BASE_URL}${API.Admin.SingleUser}/${id}`
     );
-    console.log(userProfile);
     if (userProfile) {
       let profile = userStore.mapResponseToProfile(userProfile);
       return profile;
@@ -56,7 +54,6 @@ export const useAdminStore = defineStore("admin", () => {
       `${BASE_URL}${API.Admin.SingleUser}`,
       createRequest
     );
-    console.log(userProfile);
     if (userProfile) {
       let profile = userStore.mapResponseToProfile(userProfile);
       return profile;
@@ -71,7 +68,6 @@ export const useAdminStore = defineStore("admin", () => {
       `${BASE_URL}${API.Admin.SingleUser}/${updateProfileRequest.id}`,
       updateProfileRequest
     );
-    console.log(userProfile);
     if (userProfile) {
       let profile = userStore.mapResponseToProfile(userProfile);
       return profile;
