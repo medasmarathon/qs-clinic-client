@@ -60,7 +60,10 @@
     </q-card>
 
     <q-separator inset />
-    <q-card class="items-center justify-evenly">
+    <q-card
+      class="items-center justify-evenly"
+      :class="{ hidden: isNewProfile }"
+    >
       <q-card-section>
         <div class="text-h6">Thông tin cá nhân</div>
       </q-card-section>

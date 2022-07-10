@@ -36,7 +36,9 @@
               color="negative"
               icon="delete"
               @click="deleteUser(profile)"
-            />
+            >
+              <q-tooltip> Xóa </q-tooltip>
+            </q-btn>
             <q-btn
               class="gt-xs"
               flat
@@ -45,7 +47,9 @@
               color="positive"
               icon="edit"
               @click="editUser(profile)"
-            />
+            >
+              <q-tooltip> Chỉnh sửa </q-tooltip>
+            </q-btn>
           </td>
         </tr>
       </tbody>
