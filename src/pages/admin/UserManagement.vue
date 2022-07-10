@@ -1,67 +1,69 @@
 <template>
   <q-page class="row items-center justify-evenly">
-    <q-card>
-      <q-markup-table separator="horizontal" flat bordered>
-        <thead>
-          <tr>
-            <th class="text-left">Username</th>
-            <th class="text-right">Họ tên</th>
-            <th class="text-right">Email</th>
-            <th class="text-right">Vị trí</th>
-            <th class="text-right">Thao tác</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="profile in userProfiles">
-            <td class="text-left">{{ profile.username }}</td>
-            <td class="text-right">{{ profile.fullname }}</td>
-            <td class="text-right">{{ profile.email }}</td>
-            <td class="text-right">
-              <q-badge
-                v-for="role in profile.roles"
-                outline
-                color="primary"
-                :label="role.role_name?.toString()"
-              />
-            </td>
-            <td class="text-right">
-              <q-btn
-                class="gt-xs"
-                flat
-                dense
-                round
-                color="negative"
-                icon="delete"
-                @click="deleteUser(profile)"
-              />
-              <q-btn
-                class="gt-xs"
-                flat
-                dense
-                round
-                color="positive"
-                icon="edit"
-                @click="editUser(profile)"
-              />
-            </td>
-          </tr>
-        </tbody>
-        <q-btn
-          class="q-pa-md"
-          flat
-          dense
-          outline
-          color="primary"
-          icon="add"
-          @click="addUser()"
+    <q-markup-table separator="horizontal" flat bordered>
+      <thead class="bg-primary text-white">
+        <tr>
+          <th class="text-left">Username</th>
+          <th class="text-right">Họ tên</th>
+          <th class="text-right">Email</th>
+          <th class="text-right">Vị trí</th>
+          <th class="text-right">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="profile in userProfiles"
+          :class="{ 'bg-grey-3': profile.id === currentUserProfile?.id }"
         >
-          <template slot="prepend">
-            <q-icon name="add" color="primary"></q-icon>
-          </template>
-          Thêm người dùng
-        </q-btn>
-      </q-markup-table>
-    </q-card>
+          <td class="text-left">{{ profile.username }}</td>
+          <td class="text-right">{{ profile.fullname }}</td>
+          <td class="text-right">{{ profile.email }}</td>
+          <td class="text-right">
+            <q-badge
+              v-for="role in profile.roles"
+              outline
+              color="primary"
+              :label="role.role_name?.toString()"
+            />
+          </td>
+          <td class="text-right">
+            <q-btn
+              class="gt-xs"
+              :class="{ hidden: profile.id === currentUserProfile?.id }"
+              flat
+              dense
+              round
+              color="negative"
+              icon="delete"
+              @click="deleteUser(profile)"
+            />
+            <q-btn
+              class="gt-xs"
+              flat
+              dense
+              round
+              color="positive"
+              icon="edit"
+              @click="editUser(profile)"
+            />
+          </td>
+        </tr>
+      </tbody>
+      <q-btn
+        class="q-pa-md"
+        flat
+        dense
+        outline
+        color="primary"
+        icon="add"
+        @click="addUser()"
+      >
+        <template slot="prepend">
+          <q-icon name="add" color="primary"></q-icon>
+        </template>
+        Thêm người dùng
+      </q-btn>
+    </q-markup-table>
 
     <q-dialog v-model="isEditingUser">
       <div>
@@ -108,13 +110,15 @@ import { useQuasar } from "quasar";
 import ProfileInput from "src/components/ProfileInput.vue";
 import { CreateUserProfileRequest } from "src/DTOs/request/CreateUserProfileRequest";
 import { UpdateUserProfileRequest } from "src/DTOs/request/UpdateUserProfileRequest";
-import { useAdminStore } from "src/stores";
+import { useAdminStore, useUserStore } from "src/stores";
 import { ProfileVM } from "src/viewModels/ProfileVM";
 import { onBeforeMount } from "vue";
 
 const adminStore = useAdminStore();
+const userStore = useUserStore();
 const $q = useQuasar();
 
+const currentUserProfile = ref<ProfileVM>();
 const userProfiles = ref<ProfileVM[]>([]);
 const isEditingUser = ref(false);
 const isDeletingUser = ref(false);
@@ -122,6 +126,16 @@ const currentEditedUser = ref<ProfileVM>(new ProfileVM());
 
 onBeforeMount(() => {
   fetchUsers();
+  userStore.getUserProfile().then((user) => {
+    currentUserProfile.value = {
+      ...user!,
+      phone: user!.phone ?? [],
+      password: "",
+      birthdate: dayjs(user!.birthdate)
+        .locale(Intl.DateTimeFormat().resolvedOptions().locale)
+        .format("YYYY MM DD"),
+    };
+  });
 });
 
 function fetchUsers() {
