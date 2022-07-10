@@ -171,6 +171,11 @@ function editUser(user: ProfileVM) {
   currentEditedUser.value = user;
 }
 
+function addUser() {
+  currentEditedUser.value = new ProfileVM();
+  isEditingUser.value = true;
+}
+
 function confirmUpsertUser(user: ProfileVM) {
   isEditingUser.value = false;
   if (user.id) {
@@ -250,11 +255,6 @@ function confirmDeleteUser(user: ProfileVM) {
       });
       console.log(err);
     });
-}
-
-function addUser() {
-  currentEditedUser.value = new ProfileVM();
-  isEditingUser.value = true;
 }
 </script>
 
