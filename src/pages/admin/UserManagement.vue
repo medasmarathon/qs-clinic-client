@@ -72,7 +72,7 @@
         </q-bar>
         <profile-input
           v-model:profile="currentEditedUser"
-          @confirm="confirmEditUser"
+          @confirm="confirmUpsertUser"
           :for-new="!currentEditedUser.id"
         ></profile-input>
       </div>
@@ -106,6 +106,8 @@ import { ref } from "@vue/reactivity";
 import dayjs from "dayjs";
 import { useQuasar } from "quasar";
 import ProfileInput from "src/components/ProfileInput.vue";
+import { CreateUserProfileRequest } from "src/DTOs/request/CreateUserProfileRequest";
+import { UpdateUserProfileRequest } from "src/DTOs/request/UpdateUserProfileRequest";
 import { useAdminStore } from "src/stores";
 import { ProfileVM } from "src/viewModels/ProfileVM";
 import { onBeforeMount } from "vue";
@@ -119,6 +121,10 @@ const isDeletingUser = ref(false);
 const currentEditedUser = ref<ProfileVM>(new ProfileVM());
 
 onBeforeMount(() => {
+  fetchUsers();
+});
+
+function fetchUsers() {
   adminStore
     .getMultipleUsers()
     .then((profiles) => {
@@ -136,7 +142,7 @@ onBeforeMount(() => {
       console.log("Profiles" + JSON.stringify(userProfiles.value));
     })
     .catch((err) => console.log(err));
-});
+}
 
 function deleteUser(user: ProfileVM) {
   isDeletingUser.value = true;
@@ -148,19 +154,93 @@ function editUser(user: ProfileVM) {
   currentEditedUser.value = user;
 }
 
-function confirmEditUser(user: ProfileVM) {
+function confirmUpsertUser(user: ProfileVM) {
   isEditingUser.value = false;
-  console.log("edit " + JSON.stringify(user));
+  if (user.id) {
+    console.log("update " + JSON.stringify(user));
+    let updateRequest = UpdateUserProfileRequest.fromProfileVM(
+      currentEditedUser.value
+    );
+    adminStore
+      .updateUserProfile(updateRequest)
+      .then((profile) => {
+        if (profile)
+          currentEditedUser.value = {
+            ...profile,
+            phone: profile.phone ?? [],
+            birthdate: dayjs(profile.birthdate)
+              .locale(Intl.DateTimeFormat().resolvedOptions().locale)
+              .format("YYYY MM DD"),
+          };
+        $q.notify({
+          message: "Đã cập nhật thông tin hồ sơ",
+          color: "positive",
+        });
+        fetchUsers();
+      })
+      .catch((err) => {
+        $q.notify({
+          message: "Cập nhật thất bại",
+          color: "negative",
+        });
+        console.log(err);
+      });
+    return;
+  }
+
+  console.log("create " + JSON.stringify(user));
+  let createRequest = CreateUserProfileRequest.fromProfileVM(
+    currentEditedUser.value
+  );
+  adminStore
+    .createUserProfile(createRequest)
+    .then((profile) => {
+      if (profile)
+        currentEditedUser.value = {
+          ...profile,
+          phone: profile.phone ?? [],
+          birthdate: dayjs(profile.birthdate)
+            .locale(Intl.DateTimeFormat().resolvedOptions().locale)
+            .format("YYYY MM DD"),
+        };
+      $q.notify({
+        message: "Đã tạo hồ sơ người dùng",
+        color: "positive",
+      });
+      fetchUsers();
+    })
+    .catch((err) => {
+      $q.notify({
+        message: "Tạo mới thất bại",
+        color: "negative",
+      });
+      console.log(err);
+    });
 }
 
 function confirmDeleteUser(user: ProfileVM) {
   console.log("delete " + user.id);
+  adminStore
+    .deleteUserById(user.id!)
+    .then(() => {
+      $q.notify({
+        message: "Đã xóa thông tin hồ sơ",
+        color: "positive",
+      });
+      fetchUsers();
+    })
+    .catch((err) => {
+      $q.notify({
+        message: "Thao tác xóa thất bại",
+        color: "negative",
+      });
+      console.log(err);
+    });
 }
 
 function addUser() {
   currentEditedUser.value = new ProfileVM();
   isEditingUser.value = true;
-  console.log("add " + JSON.stringify(currentEditedUser.value));
 }
 </script>
 

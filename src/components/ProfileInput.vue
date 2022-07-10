@@ -204,7 +204,7 @@ function cancelEditPassword() {
   isEditingPassword.value = false;
 }
 function confirm() {
-  if (!userProfile.value.username || !newPwd) {
+  if (!userProfile.value.username || (isNewProfile.value && !newPwd.value)) {
     $q.notify({
       message: "Thiếu username hoặc password để khởi tạo người dùng mới",
       color: "negative",

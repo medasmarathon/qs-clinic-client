@@ -6,6 +6,7 @@ import { Profile } from "src/models/Profile";
 import { UpdateUserProfileRequest } from "src/DTOs/request/UpdateUserProfileRequest";
 import { ref } from "vue";
 import { useUserStore } from "./user.store";
+import { CreateUserProfileRequest } from "src/DTOs/request/CreateUserProfileRequest";
 
 export const useAdminStore = defineStore("admin", () => {
   const users = ref<Profile[]>([]);
@@ -48,5 +49,48 @@ export const useAdminStore = defineStore("admin", () => {
     return null;
   }
 
-  return { users, getMultipleUsers, getUserById };
+  async function createUserProfile(
+    createRequest: CreateUserProfileRequest
+  ): Promise<Profile | null> {
+    let userProfile = await httpRequest.post<UserProfileResponse>(
+      `${BASE_URL}${API.Admin.SingleUser}`,
+      createRequest
+    );
+    console.log(userProfile);
+    if (userProfile) {
+      let profile = userStore.mapResponseToProfile(userProfile);
+      return profile;
+    }
+    return null;
+  }
+
+  async function updateUserProfile(
+    updateProfileRequest: UpdateUserProfileRequest
+  ): Promise<Profile | null> {
+    let userProfile = await httpRequest.put<UserProfileResponse>(
+      `${BASE_URL}${API.Admin.SingleUser}/${updateProfileRequest.id}`,
+      updateProfileRequest
+    );
+    console.log(userProfile);
+    if (userProfile) {
+      let profile = userStore.mapResponseToProfile(userProfile);
+      return profile;
+    }
+    return null;
+  }
+
+  async function deleteUserById(id: string): Promise<string | null> {
+    return await httpRequest.delete<string>(
+      `${BASE_URL}${API.Admin.SingleUser}/${id}`
+    );
+  }
+
+  return {
+    users,
+    getMultipleUsers,
+    getUserById,
+    createUserProfile,
+    updateUserProfile,
+    deleteUserById,
+  };
 });

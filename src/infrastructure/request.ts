@@ -54,21 +54,20 @@ function authHeader(url: string): Record<string, string> {
   }
 }
 
-function handleResponse<ResponseType>(
+async function handleResponse<ResponseType>(
   response: Response
 ): Promise<ResponseType> {
   const { accessToken: token, logout } = useAuthStore();
+  let resText = await response.text();
+  const data = resText && JSON.parse(resText);
   if (!response.ok) {
-    return response.text().then((text) => {
-      const data = text && JSON.parse(text);
-      if ([401, 403].includes(response.status) && token) {
-        logout();
-        return Promise.reject(data);
-      }
+    if ([401, 403].includes(response.status) && token) {
+      logout();
+      throw new Error(data);
+    }
 
-      const error = data || response.statusText;
-      return Promise.reject(error);
-    });
+    const error = data || response.statusText;
+    throw new Error(error);
   }
-  return response.json() as Promise<ResponseType>;
+  return (data as Promise<ResponseType>) ?? resText;
 }
