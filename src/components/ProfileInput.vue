@@ -159,7 +159,7 @@
 <script setup lang="ts">
 import { ProfileVM } from "src/viewModels/ProfileVM";
 import LocationInput from "src/components/LocationInput.vue";
-import { ref, toRef } from "vue";
+import { ref, toRef, watch } from "vue";
 import { useQuasar } from "quasar";
 
 const props = defineProps({
@@ -173,8 +173,13 @@ const props = defineProps({
   },
 });
 const emits = defineEmits(["update:profile", "confirm"]);
-const userProfile = toRef(props, "profile");
+const userProfileProps = toRef(props, "profile");
 const isNewProfile = toRef(props, "forNew");
+
+const userProfile = ref(new ProfileVM());
+watch(userProfileProps, (value) => {
+  userProfile.value = value;
+});
 
 const isPwd = ref(true);
 const isEditing = ref(false);

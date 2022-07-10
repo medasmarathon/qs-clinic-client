@@ -1,17 +1,17 @@
 export class WardTownVillageResponse {
-  id!: string;
+  id: string = "";
   name?: string;
   type?: string;
   district?: DistrictResponse;
 }
 export class DistrictResponse {
-  id!: string;
+  id: string = "";
   name?: string;
   type?: string;
   city_province?: CityProvinceResponse;
 }
 export class CityProvinceResponse {
-  id!: string;
+  id: string = "";
   name?: string;
   type?: string;
   slug?: string;

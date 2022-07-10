@@ -99,24 +99,59 @@ const props = defineProps<{
 
 const emits = defineEmits(["update:addressLine1", "update:location"]);
 
-const userLocation = toRef(props, "location");
+const userLocationProps = toRef(props, "location");
+const userLocation = ref(new WardTownVillageResponse());
+watch(userLocationProps, (value) => {
+  userLocation.value = value ?? userLocation.value;
+});
 
-const selectedCityProvince = ref(
-  null as QSelectOption<CityProvinceResponse> | null
-);
-const selectedDistrict = ref(null as QSelectOption<DistrictResponse> | null);
-const selectedWardTownVillage = ref(
-  null as QSelectOption<WardTownVillageResponse> | null
-);
+const selectedCityProvince = computed({
+  get(): QSelectOption<CityProvinceResponse> | null {
+    if (userLocation?.value?.district?.city_province === undefined) return null;
+    return userLocation?.value?.district?.city_province
+      ? toCityProvinceOption(userLocation.value.district.city_province)
+      : null;
+  },
+  set(selectedCityProvinceOption) {
+    if (!selectedCityProvinceOption?.value) return null;
 
-watch(userLocation, (location) => {
-  selectedCityProvince.value = location?.district?.city_province
-    ? toCityProvinceOption(location.district.city_province)
-    : null;
-  selectedDistrict.value = location?.district
-    ? toDistrictOption(location.district)
-    : null;
-  selectedWardTownVillage.value = location ? toWardTownOption(location) : null;
+    let newLocation = new WardTownVillageResponse();
+    newLocation.district = new DistrictResponse();
+    newLocation.district.city_province = selectedCityProvinceOption.value;
+    userLocation.value = newLocation;
+  },
+});
+const selectedDistrict = computed({
+  get(): QSelectOption<DistrictResponse> | null {
+    if (userLocation?.value?.district === undefined) return null;
+    return userLocation?.value?.district
+      ? toDistrictOption(userLocation.value.district)
+      : null;
+  },
+  set(selectedDistrictOption) {
+    if (!selectedDistrictOption?.value) return null;
+
+    let newLocation = new WardTownVillageResponse();
+    newLocation.district = selectedDistrictOption.value;
+    newLocation.district.city_province = selectedCityProvince.value?.value;
+    userLocation.value = newLocation;
+  },
+});
+const selectedWardTownVillage = computed({
+  get(): QSelectOption<WardTownVillageResponse> | null {
+    if (userLocation?.value === undefined) return null;
+    return userLocation?.value ? toWardTownOption(userLocation.value) : null;
+  },
+  set(selectedWardTownOption) {
+    if (!selectedDistrict.value || !selectedCityProvince.value) return null;
+    if (selectedWardTownOption?.value) {
+      let newLocation = new WardTownVillageResponse();
+      newLocation = selectedWardTownOption.value;
+      newLocation.district = selectedDistrict.value.value;
+      newLocation.district.city_province = selectedCityProvince.value.value;
+      userLocation.value = newLocation;
+    }
+  },
 });
 
 const cityOptions = ref([] as QSelectOption<CityProvinceResponse>[]);
@@ -126,23 +161,12 @@ const wardTownOptions = ref([] as QSelectOption<WardTownVillageResponse>[]);
 const locationStore = useLocationStore();
 
 function updateLocation() {
-  let newLocation = new WardTownVillageResponse();
-  if (!selectedWardTownVillage.value) return;
-  newLocation = {
-    ...selectedWardTownVillage.value.value,
-    district: selectedDistrict.value
-      ? {
-          ...selectedDistrict.value.value,
-          city_province: selectedCityProvince.value
-            ? {
-                ...selectedCityProvince.value.value,
-              }
-            : new CityProvinceResponse(),
-        }
-      : new DistrictResponse(),
-  };
-  emits("update:location", newLocation);
+  emits("update:location", userLocation.value);
 }
+
+watch(userLocation, () => {
+  emits("update:location", userLocation.value);
+});
 
 function toCityProvinceOption(
   cityProvince: CityProvinceResponse
