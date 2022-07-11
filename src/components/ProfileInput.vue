@@ -106,14 +106,29 @@
           label="Số điện thoại"
           outlined
           multiple
-          use-chips
           v-model="userProfile.phone"
           use-input
           hide-dropdown-icon
           @new-value="createNewPhoneNumber"
           class="q-ma-xs col-md"
           :disable="!isEditing"
-        />
+          @focus="phoneFieldFocus = true"
+          @blur="phoneFieldFocus = false"
+        >
+          <template v-slot:selected-item="scope">
+            <q-chip
+              :removable="phoneFieldFocus"
+              size="md"
+              @remove="scope.removeAtIndex(scope.index)"
+              :tabindex="scope.tabindex"
+              outline
+              color="primary"
+              text-color="white"
+              :label="scope.opt"
+            >
+            </q-chip>
+          </template>
+        </q-select>
         <q-input
           outlined
           stack-label
@@ -188,6 +203,7 @@ const isPwd = ref(true);
 const isEditing = ref(false);
 const isEditingPassword = ref(props.forNew);
 const newPwd = ref("");
+const phoneFieldFocus = ref(false);
 
 const $q = useQuasar();
 

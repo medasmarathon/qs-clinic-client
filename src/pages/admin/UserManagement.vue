@@ -6,6 +6,7 @@
           <th class="text-left">Username</th>
           <th class="text-right">Họ tên</th>
           <th class="text-right">Email</th>
+          <th class="text-right">Số điện thoại</th>
           <th class="text-right">Vị trí</th>
           <th class="text-right">Thao tác</th>
         </tr>
@@ -18,6 +19,17 @@
           <td class="text-left">{{ profile.username }}</td>
           <td class="text-right">{{ profile.fullname }}</td>
           <td class="text-right">{{ profile.email }}</td>
+          <td class="text-right">
+            <q-chip
+              v-for="phone in profile.phone"
+              size="md"
+              outline
+              color="primary"
+              text-color="white"
+              :label="phone"
+            >
+            </q-chip>
+          </td>
           <td class="text-right">
             <q-badge
               v-for="role in profile.roles"
