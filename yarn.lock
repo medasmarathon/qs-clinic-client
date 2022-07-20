@@ -270,6 +270,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/fhir@npm:^0.0.35":
+  version: 0.0.35
+  resolution: "@types/fhir@npm:0.0.35"
+  checksum: 9454b1838b99d876f89d0cc25961faa488fce89166b30406b248ad08f94de55a83440e5e977fd45785b37379a229e69a5eb166f859466905a9e5018b90f7d802
+  languageName: node
+  linkType: hard
+
 "@types/lodash@npm:^4.14.175":
   version: 4.14.182
   resolution: "@types/lodash@npm:4.14.182"
@@ -907,6 +914,7 @@ __metadata:
   dependencies:
     "@quasar/app-vite": ^1.0.2
     "@quasar/extras": ^1.14.1
+    "@types/fhir": ^0.0.35
     "@types/node": ^12.20.21
     autoprefixer: ^10.4.2
     dayjs: ^1.11.3
