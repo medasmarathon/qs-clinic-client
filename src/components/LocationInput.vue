@@ -4,7 +4,7 @@
             outlined
             label="Địa chỉ"
             stack-label
-            class="q-ma-xs col-md"
+            class="q-pa-xs col-md-6 col-12"
             :model-value="addressLine1"
             @update:model-value="
                 (val) => {
@@ -20,7 +20,7 @@
             :options="cityOptions"
             @filter="filterCityProvinces"
             v-model="selectedCityProvince"
-            class="q-ma-xs col-md"
+            class="q-pa-xs col-md-2 col-12"
             :disable="!isEditing"
         >
             <template v-slot:no-option>
@@ -39,7 +39,7 @@
             :options="districtOptions"
             @filter="filterDistrict"
             v-model="selectedDistrict"
-            class="q-ma-xs col-md"
+            class="q-pa-xs col-md-2 col-12"
             :disable="!isEditing"
         >
             <template v-slot:no-option>
@@ -59,7 +59,7 @@
             @filter="filterWardTownVillage"
             v-model="selectedWardTownVillage"
             @blur="updateLocation"
-            class="q-ma-xs col-md"
+            class="q-pa-xs col-md-2 col-12"
             :disable="!isEditing"
         >
             <template v-slot:no-option>

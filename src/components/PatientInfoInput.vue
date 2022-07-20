@@ -11,26 +11,26 @@
             />
         </q-card-section>
         <q-separator />
-        <q-card-section class="row items-center justify-evenly">
+        <q-card-section class="row">
             <q-input
                 outlined
                 label="Họ tên"
                 disable
                 stack-label
-                class="col-md q-ma-xs"
+                class="col-md-8 q-pa-xs col-12"
                 v-model="fullName"
             />
             <q-select
                 label="Giới tính"
                 :options="genderOptions"
                 v-model="gender"
-                class="q-ma-xs col-md"
+                class="q-pa-xs col-md-2 col-12"
             />
             <q-input
                 outlined
                 stack-label
                 label="Ngày sinh"
-                class="q-ma-xs col-md"
+                class="q-pa-xs col-md-2 col-12"
                 v-model="patient.birthDate"
             >
                 <template v-slot:prepend>
