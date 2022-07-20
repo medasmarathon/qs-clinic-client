@@ -10,3 +10,4 @@ export const API = {
 };
 
 export const BASE_URL = process.env.VUE_APP_CLINIC_URL;
+export const CLINIC_NAME = process.env.VUE_APP_CLINIC_NAME;

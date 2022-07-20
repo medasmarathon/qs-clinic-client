@@ -79,30 +79,7 @@
                 <td class="text-right">
                   {{ patientInfo.visitStatus }}
                 </td>
-                <td class="text-right">
-                  <q-btn
-                    class="gt-xs"
-                    flat
-                    dense
-                    round
-                    color="negative"
-                    icon="delete"
-                    @click="deletePatient(patientInfo)"
-                  >
-                    <q-tooltip> Xóa </q-tooltip>
-                  </q-btn>
-                  <q-btn
-                    class="gt-xs"
-                    flat
-                    dense
-                    round
-                    color="positive"
-                    icon="edit"
-                    @click="editPatient(patientInfo)"
-                  >
-                    <q-tooltip> Chỉnh sửa </q-tooltip>
-                  </q-btn>
-                </td>
+                <td class="text-right">Thao tác</td>
               </tr>
             </tbody>
           </q-markup-table>
@@ -123,8 +100,6 @@ function barcodeEnter() {
 }
 
 const patientReceptionInfoList = ref();
-function deletePatient(patientInfo) {}
-function editPatient(patientInfo) {}
 </script>
 
 <style scoped></style>
