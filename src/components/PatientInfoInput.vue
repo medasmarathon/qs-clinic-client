@@ -1,6 +1,6 @@
 <template>
   <q-card>
-    <q-card class="items-center justify-evenly">
+    <q-card-section class="items-center justify-evenly">
       <q-input
         outlined
         label="Mã code bệnh nhân"
@@ -9,9 +9,9 @@
         class="col-md q-ma-xs"
         v-model="patientCode"
       />
-    </q-card>
+    </q-card-section>
     <q-separator />
-    <q-card class="items-center justify-evenly">
+    <q-card-section class="items-center justify-evenly">
       <q-input
         outlined
         label="Họ tên"
@@ -20,7 +20,26 @@
         class="col-md q-ma-xs"
         v-model="fullName"
       />
-    </q-card>
+      <q-select
+        label="Giới tính"
+        :options="genderOptions"
+        v-model="gender"
+        class="q-ma-xs col-md"
+      />
+    </q-card-section>
+    <q-card-actions class="row">
+      <div class="col-xs-12 col-md-auto row q-pa-xs">
+        <q-btn color="positive" @click="confirm()" outline class="col-xs-12">
+          Xác nhận
+        </q-btn>
+      </div>
+
+      <div class="col-xs-12 col-md-auto row q-pa-xs">
+        <q-btn color="negative" @click="cancel()" outline class="col-xs-12">
+          Hủy
+        </q-btn>
+      </div>
+    </q-card-actions>
   </q-card>
 </template>
 
@@ -28,21 +47,32 @@
 import { HumanName, Identifier, Patient } from "fhir/r5";
 import { toRef, computed, ref } from "vue";
 import { CLINIC_NAME } from "src/globals";
+import { uniqueId } from "lodash";
 
 const props = defineProps({
-  patientModel: Object as () => Patient,
+  patientModel: {
+    type: Object as () => Patient,
+    default: {} as Patient,
+  },
 });
 const patientModelProps = toRef(props, "patientModel");
-const emits = defineEmits(["update:patient", "confirm"]);
+const emits = defineEmits(["update:patientModel", "confirm", "cancel"]);
 
 const patient = ref(patientModelProps.value);
 
+function cancel() {
+  emits("cancel");
+}
+function confirm() {
+  emits("update:patientModel", patient.value ?? {});
+  emits("confirm");
+}
 const patientCode = computed({
   get() {
     let ptCode = patient.value?.identifier?.find(
       (id) => id.use === "official" && id.assigner === CLINIC_NAME
     );
-    return ptCode ? ptCode.id : "";
+    return ptCode ? ptCode.value : "";
   },
   set(newValue) {
     let existingPtCode = patient.value?.identifier?.find(
@@ -52,9 +82,10 @@ const patientCode = computed({
       existingPtCode.id = newValue;
     } else {
       patient.value?.identifier?.push({
+        id: uniqueId(),
         use: "official",
         assigner: CLINIC_NAME,
-        id: newValue,
+        value: newValue,
       } as Identifier);
     }
   },
@@ -83,6 +114,14 @@ const fullName = computed({
     }
   },
 });
+const gender = computed({
+  get: () => patient.value.gender,
+  set: (newValue) => {
+    patient.value.gender = newValue;
+  },
+});
+
+const genderOptions = ["male", "female", "other", "unknown"];
 </script>
 
 <style scoped></style>

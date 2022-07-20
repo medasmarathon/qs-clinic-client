@@ -17,7 +17,12 @@
         Tìm
       </q-btn>
       <q-space />
-      <q-btn outline color="primary" class="q-pa-sm q-ma-xs">
+      <q-btn
+        outline
+        color="primary"
+        class="q-pa-sm q-ma-xs"
+        @click="addPatient"
+      >
         Thêm bệnh nhân
       </q-btn>
     </q-toolbar>
@@ -61,7 +66,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="patientInfo in patientReceptionInfoList">
+              <tr v-for="patientInfo in receptionVM.patientWaitingList">
                 <td class="text-left">{{ patientInfo.orderNumber }}</td>
                 <td class="text-right">{{ patientInfo.code }}</td>
                 <td class="text-right">{{ patientInfo.fullname }}</td>
@@ -86,20 +91,51 @@
         </q-tab-panel>
       </q-tab-panels>
     </q-card>
+
+    <q-dialog v-model="isEditingPatient">
+      <div>
+        <q-bar class="row items-center bg-primary text-white">
+          <div class="text-h6">Chỉnh sửa thông tin bệnh nhân</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-bar>
+        <patient-info-input
+          v-model:patient-model="currentEditingPatient"
+          @confirm="confirmUpsertPatient"
+          @cancel="cancel"
+        ></patient-info-input>
+      </div>
+    </q-dialog>
   </q-page>
 </template>
 
 <script setup lang="ts">
+import { Patient } from "fhir/r5";
+import PatientInfoInput from "src/components/PatientInfoInput.vue";
+import { ReceptionVM } from "src/viewModels/ReceptionVM";
 import { ref } from "vue";
 
+const receptionVM = ref(new ReceptionVM());
 const patientBarcode = ref("");
 const tab = ref("waitlist");
+const isEditingPatient = ref(false);
+const currentEditingPatient = ref<Patient>();
 
 function barcodeEnter() {
   console.log("Barcode enter");
 }
 
-const patientReceptionInfoList = ref();
+function addPatient() {
+  isEditingPatient.value = true;
+}
+
+function cancel() {
+  isEditingPatient.value = false;
+}
+
+function confirmUpsertPatient() {
+  isEditingPatient.value = false;
+}
 </script>
 
 <style scoped></style>
