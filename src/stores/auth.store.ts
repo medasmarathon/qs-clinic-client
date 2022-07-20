@@ -8,49 +8,49 @@ import { BASE_URL } from "src/globals";
 const authUrl = `${BASE_URL}/auth`;
 
 class LoginResponse {
-  status!: "SUCCESS" | "ERROR" | "UNAUTHORIZED";
-  message!: string;
-  token?: string;
+    status!: "SUCCESS" | "ERROR" | "UNAUTHORIZED";
+    message!: string;
+    token?: string;
 }
 
 export const useAuthStore = defineStore({
-  id: "auth",
-  state: () => ({
-    // initialize state from local storage to enable user to stay logged in
-    accessToken: localStorage.getItem("accessToken") ?? "",
-    returnUrl: null,
-  }),
-  getters: {
-    isLoggedIn(state) {
-      return state.accessToken != "";
+    id: "auth",
+    state: () => ({
+        // initialize state from local storage to enable user to stay logged in
+        accessToken: localStorage.getItem("accessToken") ?? "",
+        returnUrl: null,
+    }),
+    getters: {
+        isLoggedIn(state) {
+            return state.accessToken != "";
+        },
     },
-  },
-  actions: {
-    async login(username: string, password: string): Promise<void> {
-      const loginResponse = await httpRequest.post<LoginResponse>(
-        `${authUrl}/login`,
-        {
-          username,
-          password,
-        }
-      );
+    actions: {
+        async login(username: string, password: string): Promise<void> {
+            const loginResponse = await httpRequest.post<LoginResponse>(
+                `${authUrl}/login`,
+                {
+                    username,
+                    password,
+                }
+            );
 
-      if (!loginResponse.token) {
-        throw new Error(loginResponse.status);
-      }
-      // update pinia state
-      this.accessToken = loginResponse.token;
+            if (!loginResponse.token) {
+                throw new Error(loginResponse.status);
+            }
+            // update pinia state
+            this.accessToken = loginResponse.token;
 
-      // store user details and jwt in local storage to keep user logged in between page refreshes
-      localStorage.setItem("accessToken", loginResponse.token);
+            // store user details and jwt in local storage to keep user logged in between page refreshes
+            localStorage.setItem("accessToken", loginResponse.token);
 
-      // redirect to previous url or default to home page
-      Router.push(this.returnUrl || "/home");
+            // redirect to previous url or default to home page
+            Router.push(this.returnUrl || "/home");
+        },
+        logout() {
+            this.accessToken = "";
+            localStorage.removeItem("accessToken");
+            Router.push("/login");
+        },
     },
-    logout() {
-      this.accessToken = "";
-      localStorage.removeItem("accessToken");
-      Router.push("/login");
-    },
-  },
 });

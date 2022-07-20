@@ -1,31 +1,31 @@
 <template>
-  <div
-    class="fullscreen bg-blue text-white text-center q-pa-md flex flex-center"
-  >
-    <div>
-      <div style="font-size: 30vh">401</div>
+    <div
+        class="fullscreen bg-blue text-white text-center q-pa-md flex flex-center"
+    >
+        <div>
+            <div style="font-size: 30vh">401</div>
 
-      <div class="text-h2" style="opacity: 0.4">
-        Oops. Retricted access only ...
-      </div>
+            <div class="text-h2" style="opacity: 0.4">
+                Oops. Retricted access only ...
+            </div>
 
-      <q-btn
-        class="q-mt-xl"
-        color="white"
-        text-color="blue"
-        unelevated
-        to="/"
-        label="Go Home"
-        no-caps
-      />
+            <q-btn
+                class="q-mt-xl"
+                color="white"
+                text-color="blue"
+                unelevated
+                to="/"
+                label="Go Home"
+                no-caps
+            />
+        </div>
     </div>
-  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "ErrorNotFound",
+    name: "ErrorNotFound",
 });
 </script>

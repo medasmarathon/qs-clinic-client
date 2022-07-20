@@ -1,112 +1,126 @@
 <template>
-  <q-page class="q-pa-md">
-    <q-toolbar class="row">
-      <q-input
-        outline
-        v-model="patientBarcode"
-        label="Nhập mã barcode bệnh nhân"
-        class="q-pa-sm q-ma-xs"
-        @keyup="(e) => (e.key === 'Enter' ? barcodeEnter() : null)"
-      ></q-input>
-      <q-btn
-        outline
-        color="primary"
-        class="q-pa-sm q-ma-xs"
-        @click="barcodeEnter"
-      >
-        Tìm
-      </q-btn>
-      <q-space />
-      <q-btn
-        outline
-        color="primary"
-        class="q-pa-sm q-ma-xs"
-        @click="addPatient"
-      >
-        Thêm bệnh nhân
-      </q-btn>
-    </q-toolbar>
+    <q-page class="q-pa-md">
+        <q-toolbar class="row">
+            <q-input
+                outline
+                v-model="patientBarcode"
+                label="Nhập mã barcode bệnh nhân"
+                class="q-pa-sm q-ma-xs"
+                @keyup="(e) => (e.key === 'Enter' ? barcodeEnter() : null)"
+            ></q-input>
+            <q-btn
+                outline
+                color="primary"
+                class="q-pa-sm q-ma-xs"
+                @click="barcodeEnter"
+            >
+                Tìm
+            </q-btn>
+            <q-space />
+            <q-btn
+                outline
+                color="primary"
+                class="q-pa-sm q-ma-xs"
+                @click="addPatient"
+            >
+                Thêm bệnh nhân
+            </q-btn>
+        </q-toolbar>
 
-    <q-card flat>
-      <q-tabs
-        v-model="tab"
-        dense
-        align="left"
-        active-color="primary"
-        indicator-color="primary"
-      >
-        <q-tab name="waitlist" label="Phòng chờ" />
-      </q-tabs>
+        <q-card flat>
+            <q-tabs
+                v-model="tab"
+                dense
+                align="left"
+                active-color="primary"
+                indicator-color="primary"
+            >
+                <q-tab name="waitlist" label="Phòng chờ" />
+            </q-tabs>
 
-      <q-separator />
+            <q-separator />
 
-      <q-tab-panels v-model="tab" animated>
-        <q-tab-panel name="waitlist">
-          <q-markup-table separator="horizontal" flat>
-            <thead>
-              <tr>
-                <th class="text-left">
-                  <span class="text-body1">Số thứ tự</span>
-                </th>
-                <th class="text-right">
-                  <span class="text-body1">Mã</span>
-                </th>
-                <th class="text-right">
-                  <span class="text-body1">Họ tên bệnh nhân</span>
-                </th>
-                <th class="text-right">
-                  <span class="text-body1">Số điện thoại</span>
-                </th>
-                <th class="text-right">
-                  <span class="text-body1">Tình trạng khám</span>
-                </th>
-                <th class="text-right">
-                  <span class="text-body1">Thao tác</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="patientInfo in receptionVM.patientWaitingList">
-                <td class="text-left">{{ patientInfo.orderNumber }}</td>
-                <td class="text-right">{{ patientInfo.code }}</td>
-                <td class="text-right">{{ patientInfo.fullname }}</td>
-                <td class="text-right">
-                  <q-chip
-                    v-for="phone in patientInfo.telecom"
-                    size="md"
-                    outline
-                    color="primary"
-                    text-color="white"
-                    :label="phone"
-                  >
-                  </q-chip>
-                </td>
-                <td class="text-right">
-                  {{ patientInfo.visitStatus }}
-                </td>
-                <td class="text-right">Thao tác</td>
-              </tr>
-            </tbody>
-          </q-markup-table>
-        </q-tab-panel>
-      </q-tab-panels>
-    </q-card>
+            <q-tab-panels v-model="tab" animated>
+                <q-tab-panel name="waitlist">
+                    <q-markup-table separator="horizontal" flat>
+                        <thead>
+                            <tr>
+                                <th class="text-left">
+                                    <span class="text-body1">Số thứ tự</span>
+                                </th>
+                                <th class="text-right">
+                                    <span class="text-body1">Mã</span>
+                                </th>
+                                <th class="text-right">
+                                    <span class="text-body1"
+                                        >Họ tên bệnh nhân</span
+                                    >
+                                </th>
+                                <th class="text-right">
+                                    <span class="text-body1"
+                                        >Số điện thoại</span
+                                    >
+                                </th>
+                                <th class="text-right">
+                                    <span class="text-body1"
+                                        >Tình trạng khám</span
+                                    >
+                                </th>
+                                <th class="text-right">
+                                    <span class="text-body1">Thao tác</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                v-for="patientInfo in receptionVM.patientWaitingList"
+                            >
+                                <td class="text-left">
+                                    {{ patientInfo.orderNumber }}
+                                </td>
+                                <td class="text-right">
+                                    {{ patientInfo.code }}
+                                </td>
+                                <td class="text-right">
+                                    {{ patientInfo.fullname }}
+                                </td>
+                                <td class="text-right">
+                                    <q-chip
+                                        v-for="phone in patientInfo.telecom"
+                                        size="md"
+                                        outline
+                                        color="primary"
+                                        text-color="white"
+                                        :label="phone"
+                                    >
+                                    </q-chip>
+                                </td>
+                                <td class="text-right">
+                                    {{ patientInfo.visitStatus }}
+                                </td>
+                                <td class="text-right">Thao tác</td>
+                            </tr>
+                        </tbody>
+                    </q-markup-table>
+                </q-tab-panel>
+            </q-tab-panels>
+        </q-card>
 
-    <q-dialog v-model="isEditingPatient">
-      <div style="max-width: max-content">
-        <q-bar class="row items-center bg-primary text-white">
-          <div class="text-h6">Chỉnh sửa thông tin bệnh nhân</div>
-          <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
-        </q-bar>
-        <patient-info-input
-          v-model:patient-model="currentEditingPatient"
-          @confirm="confirmUpsertPatient"
-          @cancel="cancel"
-        ></patient-info-input>
-      </div>
-    </q-dialog>
-  </q-page>
+        <q-dialog v-model="isEditingPatient">
+            <div style="max-width: max-content">
+                <q-bar class="row items-center bg-primary text-white">
+                    <div class="text-h6">Chỉnh sửa thông tin bệnh nhân</div>
+                    <q-space />
+                    <q-btn icon="close" flat round dense v-close-popup />
+                </q-bar>
+                <patient-info-input
+                    v-model:patient-model="currentEditingPatient"
+                    @confirm="confirmUpsertPatient"
+                    @cancel="cancel"
+                ></patient-info-input>
+            </div>
+        </q-dialog>
+    </q-page>
 </template>
 
 <script setup lang="ts">
@@ -122,19 +136,19 @@ const isEditingPatient = ref(false);
 const currentEditingPatient = ref<Patient>();
 
 function barcodeEnter() {
-  console.log("Barcode enter");
+    console.log("Barcode enter");
 }
 
 function addPatient() {
-  isEditingPatient.value = true;
+    isEditingPatient.value = true;
 }
 
 function cancel() {
-  isEditingPatient.value = false;
+    isEditingPatient.value = false;
 }
 
 function confirmUpsertPatient() {
-  isEditingPatient.value = false;
+    isEditingPatient.value = false;
 }
 </script>
 
