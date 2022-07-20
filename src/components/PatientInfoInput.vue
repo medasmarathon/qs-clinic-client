@@ -2,7 +2,7 @@
   <q-card>
     <q-card-section class="items-center justify-evenly">
       <q-input
-        outlined
+        filled
         label="Mã code bệnh nhân"
         disable
         stack-label
@@ -11,7 +11,7 @@
       />
     </q-card-section>
     <q-separator />
-    <q-card-section class="items-center justify-evenly">
+    <q-card-section class="row items-center justify-evenly">
       <q-input
         outlined
         label="Họ tên"
@@ -26,6 +26,25 @@
         v-model="gender"
         class="q-ma-xs col-md"
       />
+      <q-input
+        outlined
+        stack-label
+        label="Ngày sinh"
+        class="q-ma-xs col-md"
+        v-model="patient.birthDate"
+      >
+        <template v-slot:prepend>
+          <q-icon name="event">
+            <q-popup-proxy
+              cover
+              transition-show="scale"
+              transition-hide="scale"
+            >
+              <q-date v-model="patient.birthDate"> </q-date>
+            </q-popup-proxy>
+          </q-icon>
+        </template>
+      </q-input>
     </q-card-section>
     <q-card-actions class="row">
       <div class="col-xs-12 col-md-auto row q-pa-xs">
@@ -48,6 +67,7 @@ import { HumanName, Identifier, Patient } from "fhir/r5";
 import { toRef, computed, ref } from "vue";
 import { CLINIC_NAME } from "src/globals";
 import { uniqueId } from "lodash";
+import { QPopupProxy } from "quasar";
 
 const props = defineProps({
   patientModel: {
