@@ -46,6 +46,16 @@
         </template>
       </q-input>
     </q-card-section>
+    <q-card-section class="row items-center justify-evenly">
+      <location-input
+        :is-editing="true"
+        :address-line1="addressLine"
+        :location="addressLocation"
+        @update:address-line1="updateAddressLine"
+        @update:location="updateLocation"
+      >
+      </location-input>
+    </q-card-section>
     <q-card-actions class="row">
       <div class="col-xs-12 col-md-auto row q-pa-xs">
         <q-btn color="positive" @click="confirm()" outline class="col-xs-12">
@@ -64,10 +74,18 @@
 
 <script setup lang="ts">
 import { HumanName, Identifier, Patient } from "fhir/r5";
-import { toRef, computed, ref } from "vue";
+import { toRef, computed, ref, onMounted } from "vue";
 import { CLINIC_NAME } from "src/globals";
 import { uniqueId } from "lodash";
 import { QPopupProxy } from "quasar";
+import LocationInput from "./LocationInput.vue";
+import { useLocationStore } from "src/stores";
+import { WardTownVillageResponse } from "src/DTOs/response/LocationResponse";
+
+const locationStore = useLocationStore();
+onMounted(async () => {
+  await getLocation();
+});
 
 const props = defineProps({
   patientModel: {
@@ -140,6 +158,61 @@ const gender = computed({
     patient.value.gender = newValue;
   },
 });
+
+const addressLine = computed(
+  () =>
+    patient.value.address
+      ?.find((ad) => ad.use === "home")
+      ?.line?.slice(0, -1)
+      .join(" ") ?? ""
+);
+const addressLocation = ref();
+
+async function getLocation() {
+  let curAddress = patient.value.address?.find((ad) => ad.use === "home");
+  if (
+    !curAddress ||
+    !curAddress.district ||
+    !curAddress.city ||
+    !curAddress.line?.length
+  ) {
+    addressLocation.value = new WardTownVillageResponse();
+    return;
+  }
+
+  let city = curAddress.city;
+  let district = curAddress.district;
+  let wardTown = curAddress.line.slice(-1)[0];
+  let wardTowns = await locationStore.getWardTownVillageAutocomplete(wardTown);
+
+  if (wardTowns.length === 1) {
+    addressLocation.value = wardTowns[0];
+    return;
+  }
+  let districts = await locationStore.getDistrictAutocomplete(district);
+  if (districts.length === 1) {
+    addressLocation.value = {
+      district: districts[0],
+    } as WardTownVillageResponse;
+    return;
+  }
+  let cities = await locationStore.getCityProvinceAutocomplete(city);
+  if (cities.length === 1) {
+    addressLocation.value = {
+      district: {
+        cityProvince: cities[0],
+      },
+    } as WardTownVillageResponse;
+    return;
+  }
+  addressLocation.value = new WardTownVillageResponse();
+}
+function updateAddressLine(addressLine: string) {
+  console.log(addressLine);
+}
+function updateLocation(location: WardTownVillageResponse) {
+  console.log(location);
+}
 
 const genderOptions = ["male", "female", "other", "unknown"];
 </script>

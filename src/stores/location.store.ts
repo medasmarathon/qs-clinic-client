@@ -60,8 +60,8 @@ export const useLocationStore = defineStore({
     },
     async getWardTownVillageAutocomplete(
       term: string,
-      districtId: string,
-      cityProvinceId: string
+      districtId?: string,
+      cityProvinceId?: string
     ): Promise<WardTownVillageResponse[]> {
       let searchParams = new URLSearchParams();
       if (term) searchParams.set("term", term);
@@ -90,7 +90,7 @@ export const useLocationStore = defineStore({
     },
     async getDistrictAutocomplete(
       term: string,
-      cityProvinceId: string
+      cityProvinceId?: string
     ): Promise<DistrictResponse[]> {
       let searchParams = new URLSearchParams();
       if (term) searchParams.set("term", term);
