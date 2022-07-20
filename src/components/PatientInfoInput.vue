@@ -77,7 +77,7 @@ import { HumanName, Identifier, Patient } from "fhir/r5";
 import { toRef, computed, ref, onMounted } from "vue";
 import { CLINIC_NAME } from "src/globals";
 import { uniqueId } from "lodash";
-import { QPopupProxy } from "quasar";
+import { QPopupProxy, QSelectOption } from "quasar";
 import LocationInput from "./LocationInput.vue";
 import { useLocationStore } from "src/stores";
 import { WardTownVillageResponse } from "src/DTOs/response/LocationResponse";
@@ -102,6 +102,7 @@ function cancel() {
   emits("cancel");
 }
 function confirm() {
+  console.log(patient.value);
   emits("update:patientModel", patient.value ?? {});
   emits("confirm");
 }
@@ -152,10 +153,28 @@ const fullName = computed({
     }
   },
 });
+const genderOptions: QSelectOption<"male" | "female" | "other" | "unknown">[] =
+  [
+    { value: "male", label: "Nam" },
+    {
+      value: "female",
+      label: "Nữ",
+    },
+    { value: "other", label: "Khác" },
+    {
+      value: "unknown",
+      label: "Không xác định",
+    },
+  ];
 const gender = computed({
-  get: () => patient.value.gender,
-  set: (newValue) => {
-    patient.value.gender = newValue;
+  get: (): QSelectOption<"male" | "female" | "other" | "unknown"> => {
+    return (
+      genderOptions.find((op) => op.value === patient.value.gender) ??
+      genderOptions[3]
+    );
+  },
+  set: (newValue: QSelectOption<"male" | "female" | "other" | "unknown">) => {
+    patient.value.gender = newValue.value;
   },
 });
 
@@ -213,8 +232,6 @@ function updateAddressLine(addressLine: string) {
 function updateLocation(location: WardTownVillageResponse) {
   console.log(location);
 }
-
-const genderOptions = ["male", "female", "other", "unknown"];
 </script>
 
 <style scoped></style>

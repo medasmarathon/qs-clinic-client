@@ -93,7 +93,7 @@
     </q-card>
 
     <q-dialog v-model="isEditingPatient">
-      <div>
+      <div style="max-width: max-content">
         <q-bar class="row items-center bg-primary text-white">
           <div class="text-h6">Chỉnh sửa thông tin bệnh nhân</div>
           <q-space />
