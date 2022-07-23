@@ -7,6 +7,8 @@ export const API = {
         MultipleUsers: "/api/admin/users",
         SingleUser: "/api/admin/user",
     },
+    Patient: "/api/patient",
+    Appointment: "/api/appointment",
 };
 
 export const BASE_URL = process.env.VUE_APP_CLINIC_URL;
