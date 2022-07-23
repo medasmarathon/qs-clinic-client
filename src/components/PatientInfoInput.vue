@@ -15,10 +15,9 @@
             <q-input
                 outlined
                 label="Họ tên"
-                disable
                 stack-label
                 class="col-md-8 q-pa-xs col-12"
-                v-model="fullName"
+                v-model="patientFullName"
             />
             <q-select
                 label="Giới tính"
@@ -112,6 +111,7 @@ function cancel() {
     emits("cancel");
 }
 function confirm() {
+    setName(patientFullName.value);
     console.log(patient.value);
     emits("update:patientModel", patient.value ?? {});
     emits("confirm");
@@ -139,30 +139,32 @@ const patientCode = computed({
         }
     },
 });
-const fullName = computed({
-    get() {
-        let humanName = patient.value?.name?.find((n) => n.use === "official");
-        return humanName
-            ? `${humanName?.family} ${humanName?.given?.join(" ")}`
-            : "";
-    },
-    set(newValue) {
-        let existingHumanName = patient.value?.name?.find(
-            (n) => n.use === "official"
-        );
-        let nameParts = newValue.split(" ");
-        let humanName: HumanName = {
-            use: "official",
-            family: nameParts[0],
-            given: nameParts.splice(1, nameParts.length - 1),
-        };
-        if (existingHumanName) {
-            existingHumanName = humanName;
-        } else {
-            patient.value?.name?.push(humanName);
-        }
-    },
+const fullName = computed(() => {
+    let humanName = patient.value?.name?.find((n) => n.use === "official");
+    return humanName
+        ? `${humanName?.family} ${humanName?.given?.join(" ")}`
+        : "";
 });
+const patientFullName = ref(fullName.value);
+function setName(newPatientName: string) {
+    let existingHumanName = patient.value?.name?.find(
+        (n) => n.use === "official"
+    );
+    let nameParts = newPatientName.split(" ");
+    let humanName: HumanName = {
+        use: "official",
+        family: nameParts[0],
+        given: nameParts.splice(1, nameParts.length - 1),
+    };
+    if (existingHumanName) {
+        patient.value.name!.map((name) =>
+            name.use === "official" ? humanName : name
+        );
+    } else {
+        patient.value.name || (patient.value.name = []);
+        patient.value?.name.push(humanName);
+    }
+}
 const genderOptions: QSelectOption<"male" | "female" | "other" | "unknown">[] =
     [
         { value: "male", label: "Nam" },
@@ -188,13 +190,7 @@ const gender = computed({
     },
 });
 
-const addressLine = computed(
-    () =>
-        patient.value.address
-            ?.find((ad) => ad.use === "home")
-            ?.line?.slice(0, -1)
-            .join(" ") ?? ""
-);
+const addressLine = ref<string>();
 const addressLocation = ref();
 
 async function getLocation() {
@@ -238,11 +234,50 @@ async function getLocation() {
     }
     addressLocation.value = new WardTownVillageResponse();
 }
-function updateAddressLine(addressLine: string) {
-    console.log(addressLine);
+function updateAddressLine(newAddressLine: string) {
+    addressLine.value = newAddressLine;
+    let existingAddress = patient.value.address?.find(
+        (ad) => ad.use === "home"
+    );
+    if (existingAddress) {
+        existingAddress.line = newAddressLine.split(" ");
+    } else {
+        patient.value.address || (patient.value.address = []);
+        patient.value.address.push({
+            use: "home",
+            line: newAddressLine.split(" "),
+        });
+    }
 }
-function updateLocation(location: WardTownVillageResponse) {
-    console.log(location);
+function updateLocation(newLocation: WardTownVillageResponse) {
+    addressLocation.value = newLocation;
+    let existingAddress = patient.value.address?.find(
+        (ad) => ad.use === "home"
+    );
+    if (existingAddress) {
+        existingAddress = {
+            ...existingAddress,
+            city: newLocation.district?.cityProvince?.name,
+            district: newLocation.district?.name,
+            line: newLocation.name
+                ? (addressLine.value + newLocation?.name ?? "").split(" ")
+                : addressLine.value
+                ? addressLine.value.split(" ")
+                : [],
+        };
+    } else {
+        patient.value.address || (patient.value.address = []);
+        patient.value.address.push({
+            use: "home",
+            city: newLocation.district?.cityProvince?.name,
+            district: newLocation.district?.name,
+            line: newLocation.name
+                ? (addressLine.value + newLocation?.name ?? "").split(" ")
+                : addressLine.value
+                ? addressLine.value.split(" ")
+                : [],
+        });
+    }
 }
 </script>
 

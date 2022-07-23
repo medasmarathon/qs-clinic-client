@@ -133,7 +133,7 @@ const receptionVM = ref(new ReceptionVM());
 const patientBarcode = ref("");
 const tab = ref("waitlist");
 const isEditingPatient = ref(false);
-const currentEditingPatient = ref<Patient>();
+const currentEditingPatient = ref<Patient>({ resourceType: "Patient" });
 
 function barcodeEnter() {
     console.log("Barcode enter");
@@ -149,6 +149,7 @@ function cancel() {
 
 function confirmUpsertPatient() {
     isEditingPatient.value = false;
+    console.log(currentEditingPatient.value);
 }
 </script>
 
