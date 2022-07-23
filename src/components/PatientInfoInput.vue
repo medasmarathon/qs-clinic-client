@@ -53,29 +53,6 @@
             >
             </location-input>
         </q-card-section>
-        <q-card-actions class="row">
-            <div class="col-xs-12 col-md-auto row q-pa-xs">
-                <q-btn
-                    color="positive"
-                    @click="confirm()"
-                    outline
-                    class="col-xs-12"
-                >
-                    Xác nhận
-                </q-btn>
-            </div>
-
-            <div class="col-xs-12 col-md-auto row q-pa-xs">
-                <q-btn
-                    color="negative"
-                    @click="cancel()"
-                    outline
-                    class="col-xs-12"
-                >
-                    Hủy
-                </q-btn>
-            </div>
-        </q-card-actions>
     </q-card>
 </template>
 
@@ -101,13 +78,12 @@ const props = defineProps({
     },
 });
 const patientModelProps = toRef(props, "patientModel");
-const emits = defineEmits(["update:patientModel", "confirm", "cancel"]);
-
 const patient = ref(patientModelProps.value);
+defineExpose({
+    confirm,
+});
+const emits = defineEmits(["update:patientModel"]);
 
-function cancel() {
-    emits("cancel");
-}
 function confirm() {
     setName(patientFullName.value);
     setAddress(
@@ -116,7 +92,6 @@ function confirm() {
     );
     console.log(patient.value);
     emits("update:patientModel", patient.value ?? {});
-    emits("confirm");
 }
 const patientCode = computed({
     get() {

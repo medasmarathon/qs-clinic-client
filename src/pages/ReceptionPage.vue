@@ -107,27 +107,22 @@
         </q-card>
 
         <q-dialog v-model="isEditingPatient">
-            <div style="max-width: max-content">
-                <q-bar class="row items-center bg-primary text-white">
-                    <div class="text-h6">Chỉnh sửa thông tin bệnh nhân</div>
-                    <q-space />
-                    <q-btn icon="close" flat round dense v-close-popup />
-                </q-bar>
-                <patient-info-input
+            <q-card style="max-width: max-content" flat class="q-pa-none">
+                <patient-reception-steps
                     v-model:patient-model="currentEditingPatient"
-                    @confirm="confirmUpsertPatient"
+                    @finish="confirmUpsertPatient"
                     @cancel="cancel"
-                ></patient-info-input>
-            </div>
+                ></patient-reception-steps>
+            </q-card>
         </q-dialog>
     </q-page>
 </template>
 
 <script setup lang="ts">
 import { Patient } from "fhir/r5";
-import PatientInfoInput from "src/components/PatientInfoInput.vue";
 import { ReceptionVM } from "src/viewModels/ReceptionVM";
 import { ref } from "vue";
+import PatientReceptionSteps from "src/components/PatientReceptionSteps.vue";
 
 const receptionVM = ref(new ReceptionVM());
 const patientBarcode = ref("");
