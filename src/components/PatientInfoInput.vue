@@ -65,6 +65,7 @@ import { QPopupProxy, QSelectOption } from "quasar";
 import LocationInput from "./LocationInput.vue";
 import { useLocationStore } from "src/stores";
 import { WardTownVillageResponse } from "src/DTOs/response/LocationResponse";
+import { usePatientStore } from "src/stores/patient.store";
 
 const locationStore = useLocationStore();
 onMounted(async () => {
@@ -84,14 +85,20 @@ defineExpose({
 });
 const emits = defineEmits(["update:patientModel"]);
 
-function confirm() {
+const patientStore = usePatientStore();
+
+async function confirm() {
     setName(patientFullName.value);
     setAddress(
         addressLine.value ?? "",
         addressLocation.value ?? new WardTownVillageResponse()
     );
-    console.log(patient.value);
-    emits("update:patientModel", patient.value ?? {});
+    let upsertResult = await patientStore.upsertPatient(patient.value);
+    console.log(
+        "🚀 ~ file: PatientInfoInput.vue ~ line 97 ~ confirm ~ upsertResult",
+        upsertResult
+    );
+    emits("update:patientModel", upsertResult);
 }
 const patientCode = computed({
     get() {

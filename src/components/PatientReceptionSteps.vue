@@ -62,16 +62,12 @@ const emits = defineEmits(["finish", "cancel"]);
 const patientModelProps = toRef(props, "patientModel");
 const patient = ref(patientModelProps.value);
 
-function confirmUpsertPatient() {
-    stepper.value?.next();
-    console.log(patient.value);
-}
 function cancel() {
     emits("cancel");
 }
-function nextStep() {
+async function nextStep() {
     if (step.value === 1) {
-        patientInfoInput.value?.confirm();
+        await patientInfoInput.value?.confirm();
         stepper.value?.next();
         console.log(patient.value);
         return;
