@@ -48,10 +48,8 @@
         <q-card-section class="row items-center justify-evenly">
             <location-input
                 :is-editing="true"
-                :address-line1="addressLine"
-                :location="addressLocation"
-                @update:address-line1="updateAddressLine"
-                @update:location="updateLocation"
+                v-model:address-line1="addressLine"
+                v-model:location="addressLocation"
             >
             </location-input>
         </q-card-section>
@@ -112,6 +110,10 @@ function cancel() {
 }
 function confirm() {
     setName(patientFullName.value);
+    setAddress(
+        addressLine.value ?? "",
+        addressLocation.value ?? new WardTownVillageResponse()
+    );
     console.log(patient.value);
     emits("update:patientModel", patient.value ?? {});
     emits("confirm");
@@ -211,6 +213,7 @@ async function getLocation() {
     let wardTowns = await locationStore.getWardTownVillageAutocomplete(
         wardTown
     );
+    addressLine.value = curAddress.line.slice(0, -1).join(", ");
 
     if (wardTowns.length === 1) {
         addressLocation.value = wardTowns[0];
@@ -232,50 +235,29 @@ async function getLocation() {
         } as WardTownVillageResponse;
         return;
     }
-    addressLocation.value = new WardTownVillageResponse();
 }
-function updateAddressLine(newAddressLine: string) {
+function setAddress(
+    newAddressLine: string,
+    newLocation: WardTownVillageResponse
+) {
     addressLine.value = newAddressLine;
-    let existingAddress = patient.value.address?.find(
-        (ad) => ad.use === "home"
-    );
-    if (existingAddress) {
-        existingAddress.line = newAddressLine.split(" ");
-    } else {
-        patient.value.address || (patient.value.address = []);
-        patient.value.address.push({
-            use: "home",
-            line: newAddressLine.split(" "),
-        });
-    }
-}
-function updateLocation(newLocation: WardTownVillageResponse) {
-    addressLocation.value = newLocation;
     let existingAddress = patient.value.address?.find(
         (ad) => ad.use === "home"
     );
     if (existingAddress) {
         existingAddress = {
             ...existingAddress,
+            line: `${newAddressLine}, ${newLocation.name}`.split(", "),
             city: newLocation.district?.cityProvince?.name,
             district: newLocation.district?.name,
-            line: newLocation.name
-                ? (addressLine.value + newLocation?.name ?? "").split(" ")
-                : addressLine.value
-                ? addressLine.value.split(" ")
-                : [],
         };
     } else {
         patient.value.address || (patient.value.address = []);
         patient.value.address.push({
             use: "home",
+            line: `${newAddressLine}, ${newLocation.name}`.split(", "),
             city: newLocation.district?.cityProvince?.name,
             district: newLocation.district?.name,
-            line: newLocation.name
-                ? (addressLine.value + newLocation?.name ?? "").split(" ")
-                : addressLine.value
-                ? addressLine.value.split(" ")
-                : [],
         });
     }
 }
