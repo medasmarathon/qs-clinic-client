@@ -108,9 +108,11 @@ async function confirm() {
 }
 const patientBirthday = computed({
     get: () => {
-        return dayjs(patient.value.birthDate)
-            .locale(Intl.DateTimeFormat().resolvedOptions().locale)
-            .format("YYYY/MM/DD");
+        return patient.value.birthDate
+            ? dayjs(patient.value.birthDate)
+                  .locale(Intl.DateTimeFormat().resolvedOptions().locale)
+                  .format("YYYY/MM/DD")
+            : "";
     },
     set: (newValue: string) => {
         patient.value.birthDate = newValue;

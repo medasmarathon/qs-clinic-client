@@ -156,6 +156,7 @@ function barcodeEnter(barcode: string) {
 }
 
 function addPatient() {
+    currentEditingPatient.value = { resourceType: "Patient" } as Patient;
     isEditingPatient.value = true;
 }
 
