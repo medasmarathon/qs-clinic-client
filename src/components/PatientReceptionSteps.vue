@@ -19,7 +19,29 @@
                 icon="local_hospital"
                 :done="step > 2"
             >
-                Lý do đến khám + tạm ứng
+                <appointment-info-input
+                    ref="appointmentInfoInput"
+                    v-model:patient-model="patient"
+                    v-model:appointment-model="appointment"
+                ></appointment-info-input>
+            </q-step>
+
+            <q-step
+                :name="3"
+                title="Thông tin tạm ứng"
+                icon="local_hospital"
+                :done="step > 3"
+            >
+                Tạm ứng
+            </q-step>
+
+            <q-step
+                :name="4"
+                title="Thông tin tổng quát"
+                icon="local_hospital"
+                :done="step > 4"
+            >
+                Thông tin tổng quát: sinh hiệu cân nặng chiều cao
             </q-step>
 
             <template v-slot:navigation>
@@ -27,7 +49,11 @@
                     <q-btn
                         @click="nextStep()"
                         color="primary"
-                        :label="step === 2 ? 'Hoàn tất' : 'Tiếp tục'"
+                        :label="
+                            step === 3
+                                ? 'Hoàn tất / Chuyển phòng khám'
+                                : 'Tiếp tục'
+                        "
                     />
                     <q-btn
                         v-if="step > 1"
@@ -46,12 +72,14 @@
 <script setup lang="ts">
 import { ref, toRef } from "vue";
 import { QStepper } from "quasar";
-import { Patient } from "fhir/r5";
+import { Patient, Appointment } from "fhir/r5";
 import PatientInfoInput from "./PatientInfoInput.vue";
+import AppointmentInfoInput from "./AppointmentInfoInput.vue";
 
 const step = ref(1);
 const stepper = ref<QStepper>();
 const patientInfoInput = ref<typeof PatientInfoInput>();
+const appointmentInfoInput = ref<typeof AppointmentInfoInput>();
 const props = defineProps({
     patientModel: {
         type: Object as () => Patient,
@@ -61,6 +89,7 @@ const props = defineProps({
 const emits = defineEmits(["finish", "cancel"]);
 const patientModelProps = toRef(props, "patientModel");
 const patient = ref(patientModelProps.value);
+const appointment = ref();
 
 function cancel() {
     emits("cancel");
@@ -68,12 +97,18 @@ function cancel() {
 async function nextStep() {
     if (step.value === 1) {
         await patientInfoInput.value?.confirm();
+        appointment.value = { resourceType: "Appointment" } as Appointment;
         stepper.value?.next();
         console.log(patient.value);
         return;
     }
 
     if (step.value === 2) {
+        await appointmentInfoInput.value?.confirm();
+        console.log(appointment.value);
+    }
+
+    if (step.value === 4) {
         console.log("Finish");
         emits("finish");
         return;

@@ -16,24 +16,124 @@
                 label="Trạng thái đặt hẹn"
                 :options="appointmentStatusOptions"
                 v-model="aptStatus"
-                class="q-pa-xs col-md-2 col-12"
+                class="q-pa-xs col-md-3 col-12"
             />
 
             <q-select
                 label="Hình thức khám"
                 :options="appointmentTypeOptions"
                 v-model="aptType"
-                class="q-pa-xs col-md-2 col-12"
+                class="q-pa-xs col-md-3 col-12"
             />
+        </q-card-section>
+        <q-card-section class="row">
+            <q-input
+                outlined
+                label="Lý do đến khám"
+                stack-label
+                class="col-md q-ma-xs"
+                v-model="aptReason"
+            />
+        </q-card-section>
+        <q-card-section class="row">
+            <q-input
+                outlined
+                stack-label
+                label="Thời gian bắt đầu hẹn khám"
+                class="q-pa-xs col-md-6 col-12"
+                v-model="requestedPeriodStart"
+            >
+                <template v-slot:prepend>
+                    <q-icon name="event" class="cursor-pointer">
+                        <q-popup-proxy
+                            cover
+                            transition-show="scale"
+                            transition-hide="scale"
+                        >
+                            <q-date
+                                v-model="requestedPeriodStart"
+                                mask="YYYY-MM-DD HH:mm"
+                            >
+                            </q-date>
+                        </q-popup-proxy>
+                    </q-icon>
+                </template>
+
+                <template v-slot:append>
+                    <q-icon name="access_time" class="cursor-pointer">
+                        <q-popup-proxy
+                            cover
+                            transition-show="scale"
+                            transition-hide="scale"
+                        >
+                            <q-time
+                                v-model="requestedPeriodStart"
+                                mask="YYYY-MM-DD HH:mm"
+                                format24h
+                            >
+                            </q-time>
+                        </q-popup-proxy>
+                    </q-icon>
+                </template>
+            </q-input>
+
+            <q-input
+                outlined
+                stack-label
+                label="Thời gian kết thúc hẹn khám"
+                class="q-pa-xs col-md-6 col-12"
+                v-model="requestedPeriodEnd"
+            >
+                <template v-slot:prepend>
+                    <q-icon name="event" class="cursor-pointer">
+                        <q-popup-proxy
+                            cover
+                            transition-show="scale"
+                            transition-hide="scale"
+                        >
+                            <q-date
+                                v-model="requestedPeriodEnd"
+                                mask="YYYY-MM-DD HH:mm"
+                            >
+                            </q-date>
+                        </q-popup-proxy>
+                    </q-icon>
+                </template>
+
+                <template v-slot:append>
+                    <q-icon name="access_time" class="cursor-pointer">
+                        <q-popup-proxy
+                            cover
+                            transition-show="scale"
+                            transition-hide="scale"
+                        >
+                            <q-time
+                                v-model="requestedPeriodEnd"
+                                mask="YYYY-MM-DD HH:mm"
+                                format24h
+                            >
+                            </q-time>
+                        </q-popup-proxy>
+                    </q-icon>
+                </template>
+            </q-input>
         </q-card-section>
     </q-card>
 </template>
 
 <script setup lang="ts">
-import { Appointment, CodeableConcept, Patient } from "fhir/r5";
+import {
+    Appointment,
+    CodeableConcept,
+    Patient,
+    AppointmentParticipant,
+    CodeableReference,
+    Period,
+} from "fhir/r5";
 import { QSelectOption } from "quasar";
 import { CLINIC_NAME } from "src/globals";
 import { toRef, ref, computed, watch } from "vue";
+import dayjs from "dayjs";
 
 const props = defineProps({
     patientModel: {
@@ -62,8 +162,32 @@ watch(appointmentModelProps, (newModel, oldModel) => {
     appointment.value = newModel;
 });
 
+defineExpose({
+    confirm,
+});
 async function confirm() {
-    emits("update:appointmentModel");
+    appointment.value.participant = [];
+    appointment.value.participant.push({
+        actor: {
+            reference: patientModelProps.value.id,
+            type: "Patient",
+        },
+        required: true,
+        status: "accepted",
+    } as AppointmentParticipant);
+    appointment.value.created = dayjs(Date.now())
+        .locale(Intl.DateTimeFormat().resolvedOptions().locale)
+        .format();
+    appointment.value.reason = [
+        {
+            code: aptReason.value as CodeableConcept,
+        } as CodeableReference,
+    ];
+    console.log(
+        "🚀 ~ file: AppointmentInfoInput.vue ~ line 84 ~ confirm ~ value",
+        appointment.value
+    );
+    emits("update:appointmentModel", appointment.value);
 }
 
 type StatusOptions =
@@ -115,11 +239,78 @@ const aptType = computed({
         return (
             appointmentTypeOptions.find(
                 (op) => op.value === appointment.value.appointmentType
-            ) ?? appointmentTypeOptions[3]
+            ) ?? appointmentTypeOptions[0]
         );
     },
     set: (newValue: QSelectOption<TypeOptions>) => {
         appointment.value.appointmentType = newValue.value as CodeableConcept;
+    },
+});
+
+const aptReason = ref("");
+
+const requestedPeriodStart = computed({
+    get: () => {
+        if (!appointment.value.requestedPeriod)
+            appointment.value.requestedPeriod = [];
+        return appointment.value.requestedPeriod &&
+            !!appointment.value.requestedPeriod[0]?.start
+            ? dayjs(appointment.value.requestedPeriod[0].start)
+                  .locale(Intl.DateTimeFormat().resolvedOptions().locale)
+                  .format("YYYY-MM-DD HH:mm")
+            : dayjs(Date.now())
+                  .locale(Intl.DateTimeFormat().resolvedOptions().locale)
+                  .format("YYYY-MM-DD HH:mm");
+    },
+    set: (newValue: string) => {
+        if (
+            appointment.value.requestedPeriod &&
+            appointment.value.requestedPeriod.length > 0
+        ) {
+            appointment.value.requestedPeriod[0].start = dayjs(newValue)
+                .locale(Intl.DateTimeFormat().resolvedOptions().locale)
+                .format();
+            return;
+        }
+        appointment.value.requestedPeriod = [
+            {
+                start: dayjs(newValue)
+                    .locale(Intl.DateTimeFormat().resolvedOptions().locale)
+                    .format("YYYY-MM-DD HH:mm"),
+            } as Period,
+        ];
+    },
+});
+const requestedPeriodEnd = computed({
+    get: () => {
+        if (!appointment.value.requestedPeriod)
+            appointment.value.requestedPeriod = [];
+        return appointment.value.requestedPeriod &&
+            !!appointment.value.requestedPeriod[0]?.end
+            ? dayjs(appointment.value.requestedPeriod[0].end)
+                  .locale(Intl.DateTimeFormat().resolvedOptions().locale)
+                  .format("YYYY-MM-DD HH:mm")
+            : dayjs(Date.now())
+                  .locale(Intl.DateTimeFormat().resolvedOptions().locale)
+                  .format("YYYY-MM-DD HH:mm");
+    },
+    set: (newValue: string) => {
+        if (
+            appointment.value.requestedPeriod &&
+            appointment.value.requestedPeriod.length > 0
+        ) {
+            appointment.value.requestedPeriod[0].end = dayjs(newValue)
+                .locale(Intl.DateTimeFormat().resolvedOptions().locale)
+                .format();
+            return;
+        }
+        appointment.value.requestedPeriod = [
+            {
+                end: dayjs(newValue)
+                    .locale(Intl.DateTimeFormat().resolvedOptions().locale)
+                    .format("YYYY-MM-DD HH:mm"),
+            } as Period,
+        ];
     },
 });
 </script>
