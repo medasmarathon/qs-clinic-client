@@ -45,6 +45,34 @@
                 </template>
             </q-input>
         </q-card-section>
+        <q-card-section>
+            <q-select
+                label="Số điện thoại"
+                outlined
+                multiple
+                v-model="patientTelecom"
+                use-input
+                hide-dropdown-icon
+                @new-value="createNewPhoneNumber"
+                class="q-ma-xs col-md"
+                @focus="phoneFieldFocus = true"
+                @blur="phoneFieldFocus = false"
+            >
+                <template v-slot:selected-item="scope">
+                    <q-chip
+                        :removable="phoneFieldFocus"
+                        size="md"
+                        @remove="scope.removeAtIndex(scope.index)"
+                        :tabindex="scope.tabindex"
+                        outline
+                        color="primary"
+                        text-color="white"
+                        :label="scope.opt"
+                    >
+                    </q-chip>
+                </template>
+            </q-select>
+        </q-card-section>
         <q-card-section class="row items-center justify-evenly">
             <location-input
                 :is-editing="true"
@@ -57,7 +85,7 @@
 </template>
 
 <script setup lang="ts">
-import { HumanName, Identifier, Patient } from "fhir/r5";
+import { HumanName, Identifier, Patient, ContactPoint } from "fhir/r5";
 import { toRef, computed, ref, onMounted, watch } from "vue";
 import { CLINIC_NAME } from "src/globals";
 import { uniqueId } from "lodash";
@@ -99,6 +127,14 @@ async function confirm() {
         addressLine.value ?? "",
         addressLocation.value ?? new WardTownVillageResponse()
     );
+    patient.value.telecom = patientTelecom.value
+        ? patientTelecom.value.map((tel) => {
+              return {
+                  value: tel,
+                  use: "home",
+              } as ContactPoint;
+          })
+        : undefined;
     let upsertResult = await patientStore.upsertPatient(patient.value);
     emits("update:patientModel", upsertResult);
 }
@@ -131,15 +167,17 @@ function setName(newPatientName: string) {
     let existingHumanName = patient.value?.name?.find(
         (n) => n.use === "official"
     );
-    let nameParts = newPatientName.split(" ");
+    let nameParts = newPatientName.trim().split(" ");
     let humanName: HumanName = {
         use: "official",
         family: nameParts[0],
         given: nameParts.splice(1, nameParts.length - 1),
     };
     if (existingHumanName) {
-        patient.value.name!.map((name) =>
-            name.use === "official" ? humanName : name
+        patient.value.name!.forEach(
+            (name, index) =>
+                (patient.value.name![index] =
+                    name.use === "official" ? humanName : name)
         );
     } else {
         patient.value.name || (patient.value.name = []);
@@ -170,6 +208,14 @@ const gender = computed({
         patient.value.gender = newValue.value;
     },
 });
+
+const patientTelecom = ref<string[]>(
+    patientModelProps.value.telecom?.map((tel) => tel.value ?? "") ?? []
+);
+const phoneFieldFocus = ref(false);
+function createNewPhoneNumber(phoneNumber: string, done: Function) {
+    done(phoneNumber, "add-unique");
+}
 
 const addressLine = ref<string>();
 const addressLocation = ref();

@@ -32,7 +32,7 @@
                 icon="local_hospital"
                 :done="step > 3"
             >
-                Tạm ứng
+                <advance-payment-input></advance-payment-input>
             </q-step>
 
             <q-step
@@ -41,7 +41,7 @@
                 icon="local_hospital"
                 :done="step > 4"
             >
-                Thông tin tổng quát: sinh hiệu cân nặng chiều cao
+                <general-observation-input></general-observation-input>
             </q-step>
 
             <template v-slot:navigation>
@@ -75,6 +75,8 @@ import { QStepper } from "quasar";
 import { Patient, Appointment } from "fhir/r5";
 import PatientInfoInput from "./PatientInfoInput.vue";
 import AppointmentInfoInput from "./AppointmentInfoInput.vue";
+import AdvancePaymentInput from "./AdvancePaymentInput.vue";
+import GeneralObservationInput from "./GeneralObservationInput.vue";
 
 const step = ref(1);
 const stepper = ref<QStepper>();
