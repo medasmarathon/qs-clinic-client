@@ -122,7 +122,7 @@ const patientCode = computed(() => {
     let ptCode = patient.value?.identifier?.find(
         (id) => id.use === "official" && id.assigner === CLINIC_NAME
     );
-    return ptCode ? ptCode.value : "";
+    return ptCode ? ptCode.id : "";
 });
 const fullName = computed(() => {
     let humanName = patient.value?.name?.find((n) => n.use === "official");
