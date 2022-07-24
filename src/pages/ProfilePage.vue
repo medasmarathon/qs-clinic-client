@@ -80,7 +80,7 @@ function submit() {
                     phone: profile.phone ?? [],
                     birthdate: dayjs(profile.birthdate)
                         .locale(Intl.DateTimeFormat().resolvedOptions().locale)
-                        .format("YYYY MM DD"),
+                        .format("YYYY/MM/DD"),
                 };
             $q.notify({
                 message: "Đã cập nhật thông tin hồ sơ",

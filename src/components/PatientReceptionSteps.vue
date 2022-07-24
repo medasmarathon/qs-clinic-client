@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <q-card>
         <q-stepper v-model="step" ref="stepper" color="primary" animated>
             <q-step
                 :name="1"
@@ -40,7 +40,7 @@
                 </q-stepper-navigation>
             </template>
         </q-stepper>
-    </div>
+    </q-card>
 </template>
 
 <script setup lang="ts">

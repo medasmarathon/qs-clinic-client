@@ -6,7 +6,14 @@ import { Patient } from "fhir/r5";
 export const usePatientStore = defineStore("patient", () => {
     async function getPatientById(id: string): Promise<Patient | null> {
         let patientResult = await httpRequest.get<Patient>(
-            `${BASE_URL}${API.Patient}/${id}`
+            `${BASE_URL}${API.Patient.Single}/${id}`
+        );
+        return patientResult;
+    }
+
+    async function getPatientByCode(code: string): Promise<Patient | null> {
+        let patientResult = await httpRequest.get<Patient>(
+            `${BASE_URL}${API.Patient.Code}/${code}`
         );
         return patientResult;
     }
@@ -24,5 +31,6 @@ export const usePatientStore = defineStore("patient", () => {
     return {
         getPatientById,
         upsertPatient,
+        getPatientByCode,
     };
 });

@@ -7,7 +7,10 @@ export const API = {
         MultipleUsers: "/api/admin/users",
         SingleUser: "/api/admin/user",
     },
-    Patient: "/api/patient",
+    Patient: {
+        Single: "/api/patient",
+        Code: "/api/patient/code",
+    },
     Appointment: "/api/appointment",
 };
 

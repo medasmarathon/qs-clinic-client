@@ -6,13 +6,16 @@
                 v-model="patientBarcode"
                 label="Nhập mã barcode bệnh nhân"
                 class="q-pa-sm q-ma-xs"
-                @keyup="(e) => (e.key === 'Enter' ? barcodeEnter() : null)"
+                @keyup="
+                    (e) =>
+                        e.key === 'Enter' ? barcodeEnter(patientBarcode) : null
+                "
             ></q-input>
             <q-btn
                 outline
                 color="primary"
                 class="q-pa-sm q-ma-xs"
-                @click="barcodeEnter"
+                @click="barcodeEnter(patientBarcode)"
             >
                 Tìm
             </q-btn>
@@ -109,7 +112,7 @@
         <q-dialog v-model="isEditingPatient">
             <q-card style="max-width: max-content" flat class="q-pa-none">
                 <patient-reception-steps
-                    v-model:patient-model="currentEditingPatient"
+                    :patient-model="currentEditingPatient"
                     @finish="confirmUpsertPatient"
                     @cancel="cancel"
                 ></patient-reception-steps>
@@ -123,6 +126,8 @@ import { Patient } from "fhir/r5";
 import { ReceptionVM } from "src/viewModels/ReceptionVM";
 import { ref } from "vue";
 import PatientReceptionSteps from "src/components/PatientReceptionSteps.vue";
+import { usePatientStore } from "src/stores/patient.store";
+import { useQuasar } from "quasar";
 
 const receptionVM = ref(new ReceptionVM());
 const patientBarcode = ref("");
@@ -130,7 +135,23 @@ const tab = ref("waitlist");
 const isEditingPatient = ref(false);
 const currentEditingPatient = ref<Patient>({ resourceType: "Patient" });
 
-function barcodeEnter() {
+const $q = useQuasar();
+const patientStore = usePatientStore();
+
+function barcodeEnter(barcode: string) {
+    patientStore
+        .getPatientByCode(barcode)
+        .then((patient) => {
+            if (!patient) throw new Error("Cannot find Patient");
+            currentEditingPatient.value = patient;
+            isEditingPatient.value = true;
+        })
+        .catch((err) => {
+            $q.notify({
+                message: "Không tìm thấy bệnh nhân",
+                color: "negative",
+            });
+        });
     console.log("Barcode enter");
 }
 
@@ -144,7 +165,6 @@ function cancel() {
 
 function confirmUpsertPatient() {
     isEditingPatient.value = false;
-    console.log(currentEditingPatient.value);
 }
 </script>
 

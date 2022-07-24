@@ -30,7 +30,7 @@
                 stack-label
                 label="Ngày sinh"
                 class="q-pa-xs col-md-2 col-12"
-                v-model="patient.birthDate"
+                v-model="patientBirthday"
             >
                 <template v-slot:prepend>
                     <q-icon name="event">
@@ -58,7 +58,7 @@
 
 <script setup lang="ts">
 import { HumanName, Identifier, Patient } from "fhir/r5";
-import { toRef, computed, ref, onMounted } from "vue";
+import { toRef, computed, ref, onMounted, watch } from "vue";
 import { CLINIC_NAME } from "src/globals";
 import { uniqueId } from "lodash";
 import { QPopupProxy, QSelectOption } from "quasar";
@@ -66,6 +66,7 @@ import LocationInput from "./LocationInput.vue";
 import { useLocationStore } from "src/stores";
 import { WardTownVillageResponse } from "src/DTOs/response/LocationResponse";
 import { usePatientStore } from "src/stores/patient.store";
+import dayjs from "dayjs";
 
 const locationStore = useLocationStore();
 onMounted(async () => {
@@ -87,6 +88,11 @@ const emits = defineEmits(["update:patientModel"]);
 
 const patientStore = usePatientStore();
 
+watch(patientModelProps, (oldModel, newModel) => {
+    if (JSON.stringify(patient.value) === JSON.stringify(newModel)) return;
+    patient.value = newModel;
+});
+
 async function confirm() {
     setName(patientFullName.value);
     setAddress(
@@ -100,28 +106,21 @@ async function confirm() {
     );
     emits("update:patientModel", upsertResult);
 }
-const patientCode = computed({
-    get() {
-        let ptCode = patient.value?.identifier?.find(
-            (id) => id.use === "official" && id.assigner === CLINIC_NAME
-        );
-        return ptCode ? ptCode.value : "";
+const patientBirthday = computed({
+    get: () => {
+        return dayjs(patient.value.birthDate)
+            .locale(Intl.DateTimeFormat().resolvedOptions().locale)
+            .format("YYYY/MM/DD");
     },
-    set(newValue) {
-        let existingPtCode = patient.value?.identifier?.find(
-            (id) => id.use === "official" && id.assigner === CLINIC_NAME
-        );
-        if (existingPtCode) {
-            existingPtCode.id = newValue;
-        } else {
-            patient.value?.identifier?.push({
-                id: uniqueId(),
-                use: "official",
-                assigner: CLINIC_NAME,
-                value: newValue,
-            } as Identifier);
-        }
+    set: (newValue: string) => {
+        patient.value.birthDate = newValue;
     },
+});
+const patientCode = computed(() => {
+    let ptCode = patient.value?.identifier?.find(
+        (id) => id.use === "official" && id.assigner === CLINIC_NAME
+    );
+    return ptCode ? ptCode.value : "";
 });
 const fullName = computed(() => {
     let humanName = patient.value?.name?.find((n) => n.use === "official");
