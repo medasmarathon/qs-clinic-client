@@ -15,7 +15,7 @@
 
             <q-step
                 :name="2"
-                title="Thông tin khám bệnh"
+                title="Thông tin đặt hẹn khám bệnh"
                 icon="local_hospital"
                 :done="step > 2"
             >

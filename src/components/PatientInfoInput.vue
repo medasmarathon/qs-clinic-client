@@ -100,10 +100,6 @@ async function confirm() {
         addressLocation.value ?? new WardTownVillageResponse()
     );
     let upsertResult = await patientStore.upsertPatient(patient.value);
-    console.log(
-        "🚀 ~ file: PatientInfoInput.vue ~ line 97 ~ confirm ~ upsertResult",
-        upsertResult
-    );
     emits("update:patientModel", upsertResult);
 }
 const patientBirthday = computed({
