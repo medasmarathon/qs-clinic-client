@@ -22,7 +22,7 @@ export const usePatientStore = defineStore("patient", () => {
         upsertRequest: Patient
     ): Promise<Patient | null> {
         let patientResult = await httpRequest.put<Patient>(
-            `${BASE_URL}${API.Patient}`,
+            `${BASE_URL}${API.Patient.Single}`,
             upsertRequest
         );
         return patientResult;

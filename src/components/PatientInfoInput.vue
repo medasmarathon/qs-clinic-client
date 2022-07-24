@@ -88,7 +88,7 @@ const emits = defineEmits(["update:patientModel"]);
 
 const patientStore = usePatientStore();
 
-watch(patientModelProps, (oldModel, newModel) => {
+watch(patientModelProps, (newModel, oldModel) => {
     if (JSON.stringify(patient.value) === JSON.stringify(newModel)) return;
     patient.value = newModel;
 });
@@ -238,7 +238,9 @@ function setAddress(
         patient.value.address || (patient.value.address = []);
         patient.value.address.push({
             use: "home",
-            line: `${newAddressLine}, ${newLocation.name}`.split(", "),
+            line: newLocation.name
+                ? `${newAddressLine}, ${newLocation.name}`.split(", ")
+                : [newAddressLine],
             city: newLocation.district?.cityProvince?.name,
             district: newLocation.district?.name,
         });
